@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Duke Remote (331721b2-70f6-4ffe-92f8-6a430e6a59ad)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.bOjHAm8mhN" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-duke-remote" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="Home Remote (1c107416-d433-4e1f-951e-220597deae71)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.RFc5g61UPL" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-home-remote" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="Local Ubuntu (ba3a7acf-d186-436d-9f9b-ca68a4c14d2d)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.6D4SGA5T0V" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-local-ubuntu" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

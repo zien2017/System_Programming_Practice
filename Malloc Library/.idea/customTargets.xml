@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="86b9519c-1441-41b9-aaa6-2fe41cfd0c91" name="Makefile" defaultType="MAKE">
+      <configuration id="96948421-6e88-4d7b-a21a-766043eb25d8" name="Makefile" toolchainName="Local Ubuntu">
+        <build type="MAKE">
+          <make targetName="Makefile" />
+        </build>
+      </configuration>
+    </target>
+  </component>
+</project>
