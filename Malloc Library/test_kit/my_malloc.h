@@ -1,11 +1,10 @@
 //
-// Created by Brandon Wong on 2022/1/12.
+// Created by Ziyuan Wang on 2022/1/12.
 //
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
 
 #define MEM_ATOM_SIZE sizeof(size_t)
 #define U_LONG_ONE 0x1
@@ -33,14 +32,26 @@ void* ff_malloc(size_t size);
 //Best Fit malloc
 void* bf_malloc(size_t size);
 
+// ff search in free list
+void* FFSearchInFreeList(size_t size);
+
+//bf search in free list
+void* BFSearchInFreeList(size_t size);
+
+// remove a node from the free LinkedList
+void removeFreeNodeFromLinkedList(void * ptr);
+
+// add a node to the free LinkedList
+void addFreeNodeToLinkedList(void * ptr);
+
 //First Fit free
 void ff_free(void * ptr);
 
 //Best Fit free
 void bf_free(void * ptr);
 
-// split a freed segment to allocate new memory
-void* split(size_t* head, size_t size);
+// splitSegment a freed segment to allocate new memory
+void* splitSegment(size_t* head, size_t size);
 
 // increase the top of heap when there is not enough space
 void* increase(size_t size);
@@ -49,10 +60,10 @@ void* increase(size_t size);
 void initialize();
 
 // get the offset from a head or a tail, and return the offset using in size_t* (every 4-byte)
-size_t getOffsetForSizeTPtr(size_t* boundary_ptr);
+size_t getSegmentSizeInSize_t(const size_t* boundary_ptr);
 
 // check a head of a tail if this segment is freed
-size_t isFreed(size_t* boundary_ptr);
+size_t isFreed(const size_t* boundary_ptr);
 
 // set a head of a tail that this segment is allocated
 void setAllocated(size_t* boundary_ptr);
@@ -70,5 +81,6 @@ unsigned long get_largest_free_data_segment_size();//in bytes
 unsigned long get_total_free_size();//in bytes
 
 #endif //HW1_MY_MALLOC_H
+
 
 
