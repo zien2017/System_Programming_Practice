@@ -136,10 +136,6 @@
 		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c">
 			<Option target="ringmaster"/>
 		</Unit>
-		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/socketOP.h">
-			<Option target="ringmaster"/>
-			<Option target="player"/>
-		</Unit>
 		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

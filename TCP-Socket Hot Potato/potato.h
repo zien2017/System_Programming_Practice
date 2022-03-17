@@ -12,13 +12,6 @@ struct _potato {
 
 
 
-
-
-
-
-
-
-
 #endif //TCP_SOCKET_HOT_POTATO_POTATO_H
 
 

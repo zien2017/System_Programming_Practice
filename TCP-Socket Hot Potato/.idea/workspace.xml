@@ -15,15 +15,18 @@
   <component name="ChangeListManager">
     <list default="true" id="54383377-bfa6-439b-9ad0-a8d6b8e74a46" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/C.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/C.includecache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/depend.internal" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/player.dir/depend.make" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/C.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/C.includecache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/depend.internal" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ringmaster.dir/depend.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/TCP_Socket_Hot_Potato.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/TCP_Socket_Hot_Potato.cbp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/player" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/player" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/ringmaster" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/ringmaster" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/player.c" beforeDir="false" afterPath="$PROJECT_DIR$/player.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/potato.h" beforeDir="false" afterPath="$PROJECT_DIR$/potato.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ringmaster.c" beforeDir="false" afterPath="$PROJECT_DIR$/ringmaster.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,18 +77,18 @@
     <property name="cmake.loaded.for.project" value="true" />
     <property name="structure.view.defaults.are.configured" value="true" />
   </component>
-  <component name="RunManager" selected="CMake Application.player">
+  <component name="RunManager" selected="CMake Application.ringmaster">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="player" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="123 234" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TCP_Socket_Hot_Potato" TARGET_NAME="player" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TCP_Socket_Hot_Potato" RUN_TARGET_NAME="player">
+    <configuration name="player" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="localhost 2345" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TCP_Socket_Hot_Potato" TARGET_NAME="player" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TCP_Socket_Hot_Potato" RUN_TARGET_NAME="player">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ringmaster" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="123 234 345" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TCP_Socket_Hot_Potato" TARGET_NAME="ringmaster" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TCP_Socket_Hot_Potato" RUN_TARGET_NAME="ringmaster">
+    <configuration name="ringmaster" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="2345 10 20" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TCP_Socket_Hot_Potato" TARGET_NAME="ringmaster" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TCP_Socket_Hot_Potato" RUN_TARGET_NAME="ringmaster">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -103,7 +106,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1647503152732</updated>
-      <workItem from="1647503154329" duration="9588000" />
+      <workItem from="1647503154329" duration="11441000" />
     </task>
     <servers />
   </component>

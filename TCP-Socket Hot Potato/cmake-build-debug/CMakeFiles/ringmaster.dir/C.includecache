@@ -56,9 +56,15 @@ arpa/inet.h
 pthread.h
 -
 
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/potato.h
+
 /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c
 stdio.h
 -
 stdlib.h
 -
+string.h
+-
+potato.h
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/potato.h
 
