@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.o CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o  -o TCP_Socket_Hot_Potato 

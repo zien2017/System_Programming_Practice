@@ -1,0 +1,4 @@
+C:\WINDOWS\system32\wsl.exe --distribution Ubuntu-18.04 --exec /bin/bash -c "export CLION_IDE=TRUE && export JETBRAINS_IDE=TRUE && cd '/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug' && /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G 'CodeBlocks - Unix Makefiles' '/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato'"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug

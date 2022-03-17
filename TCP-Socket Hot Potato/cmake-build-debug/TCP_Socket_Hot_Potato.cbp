@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="TCP_Socket_Hot_Potato"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TCP_Socket_Hot_Potato">
+				<Option output="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/TCP_Socket_Hot_Potato" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 TCP_Socket_Hot_Potato"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TCP_Socket_Hot_Potato/fast">
+				<Option output="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/TCP_Socket_Hot_Potato" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 TCP_Socket_Hot_Potato/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/d/Documents/GitHub/malloc_r/TCP-Socket\ Hot\ Potato/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/main.c">
+			<Option target="TCP_Socket_Hot_Potato"/>
+		</Unit>
+		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c">
+			<Option target="TCP_Socket_Hot_Potato"/>
+		</Unit>
+		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/potato.h">
+			<Option target="TCP_Socket_Hot_Potato"/>
+		</Unit>
+		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c">
+			<Option target="TCP_Socket_Hot_Potato"/>
+		</Unit>
+		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
