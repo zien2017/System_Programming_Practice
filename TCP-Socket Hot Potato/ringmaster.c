@@ -2,9 +2,9 @@
 // Created by Brandon on 3/17/2022.
 //
 
-//#include <stdio.h>
-//#include <stdlib.h>
-#include "socketOP.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 
 int main(int argc, char** argv) {
     if (argc != 4) {
@@ -16,11 +16,12 @@ int main(int argc, char** argv) {
     int num_players = atoi(argv[2]);
     int num_hops = atoi(argv[3]);
 
-    printf("port_num is %d\n", port_num);
-    printf("num_players is %d\n", num_players);
-    printf("num_hops is %d\n", num_hops);
-    struct addrinfo * listp;
-    getAddrInfo("localhost", listp);
+
+    printf("this is a ringmaster with\n");
+    printf("\tport_num is %d\n", port_num);
+    printf("\tnum_players is %d\n", num_players);
+    printf("\tnum_hops is %d\n", num_hops);
+
 
 
 

@@ -4,5 +4,7 @@
 CMakeFiles/player.dir/csapp.c.o: ../csapp.c
 CMakeFiles/player.dir/csapp.c.o: ../csapp.h
 
+CMakeFiles/player.dir/player.c.o: ../csapp.h
 CMakeFiles/player.dir/player.c.o: ../player.c
+CMakeFiles/player.dir/player.c.o: ../socketOP.h
 

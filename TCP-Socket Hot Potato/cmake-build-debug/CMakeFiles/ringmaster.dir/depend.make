@@ -4,7 +4,5 @@
 CMakeFiles/ringmaster.dir/csapp.c.o: ../csapp.c
 CMakeFiles/ringmaster.dir/csapp.c.o: ../csapp.h
 
-CMakeFiles/ringmaster.dir/ringmaster.c.o: ../csapp.h
 CMakeFiles/ringmaster.dir/ringmaster.c.o: ../ringmaster.c
-CMakeFiles/ringmaster.dir/ringmaster.c.o: ../socketOP.h
 

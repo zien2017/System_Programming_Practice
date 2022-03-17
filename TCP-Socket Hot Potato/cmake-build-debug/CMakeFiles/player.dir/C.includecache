@@ -57,8 +57,10 @@ pthread.h
 -
 
 /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c
-stdio.h
--
-stdlib.h
--
+socketOP.h
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/socketOP.h
+
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/socketOP.h
+csapp.h
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.h
 
