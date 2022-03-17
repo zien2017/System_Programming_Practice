@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.o"
   "CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o"
   "CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
   "TCP_Socket_Hot_Potato.pdb"

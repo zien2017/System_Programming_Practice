@@ -78,9 +78,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/main.c">
-			<Option target="TCP_Socket_Hot_Potato"/>
-		</Unit>
 		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c">
 			<Option target="TCP_Socket_Hot_Potato"/>
 		</Unit>

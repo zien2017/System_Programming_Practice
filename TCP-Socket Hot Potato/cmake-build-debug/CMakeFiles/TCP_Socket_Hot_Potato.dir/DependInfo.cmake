@@ -4,7 +4,6 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/main.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.o"
   "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
   "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o"
   )

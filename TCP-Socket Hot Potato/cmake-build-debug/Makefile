@@ -123,33 +123,6 @@ TCP_Socket_Hot_Potato/fast:
 	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/build
 .PHONY : TCP_Socket_Hot_Potato/fast
 
-main.o: main.c.o
-
-.PHONY : main.o
-
-# target to build an object file
-main.c.o:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.o
-.PHONY : main.c.o
-
-main.i: main.c.i
-
-.PHONY : main.i
-
-# target to preprocess a source file
-main.c.i:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.i
-.PHONY : main.c.i
-
-main.s: main.c.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.c.s:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/main.c.s
-.PHONY : main.c.s
-
 player.o: player.c.o
 
 .PHONY : player.o
@@ -213,9 +186,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... TCP_Socket_Hot_Potato"
 	@echo "... edit_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
 	@echo "... player.o"
 	@echo "... player.i"
 	@echo "... player.s"
