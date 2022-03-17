@@ -23,7 +23,6 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <pthread.h>
 
 
 /* Default file permissions are DEF_MODE & ~DEF_UMASK */
@@ -41,21 +40,21 @@ typedef struct sockaddr SA;
 /* $begin rio_t */
 #define RIO_BUFSIZE 8192
 typedef struct {
-    int rio_fd;                /* Descriptor for this internal buf */
-    int rio_cnt;               /* Unread bytes in internal buf */
-    char *rio_bufptr;          /* Next unread byte in internal buf */
-    char rio_buf[RIO_BUFSIZE]; /* Internal buffer */
+    int rio_fd;                /* descriptor for this internal buf */
+    int rio_cnt;               /* unread bytes in internal buf */
+    char *rio_bufptr;          /* next unread byte in internal buf */
+    char rio_buf[RIO_BUFSIZE]; /* internal buffer */
 } rio_t;
 /* $end rio_t */
 
 /* External variables */
-extern int h_errno;    /* Defined by BIND for DNS errors */
-extern char **environ; /* Defined by libc */
+extern int h_errno;    /* defined by BIND for DNS errors */
+extern char **environ; /* defined by libc */
 
 /* Misc constants */
-#define	MAXLINE	 8192  /* Max text line length */
-#define MAXBUF   8192  /* Max I/O buffer size */
-#define LISTENQ  1024  /* Second argument to listen() */
+#define	MAXLINE	 8192  /* max text line length */
+#define MAXBUF   8192  /* max I/O buffer size */
+#define LISTENQ  1024  /* second argument to listen() */
 
 /* Our own error-handling functions */
 void unix_error(char *msg);
@@ -158,20 +157,12 @@ ssize_t Rio_readnb(rio_t *rp, void *usrbuf, size_t n);
 ssize_t Rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen);
 
 /* Client/server helper functions */
-int open_clientfd(char *hostname, char *port);
-
-int open_listenfd(char *port);
+int open_clientfd(char *hostname, int portno);
+int open_listenfd(int portno);
 
 /* Wrappers for client/server helper functions */
-int Open_clientfd(char *hostname, char *port);
-int Open_listenfd(char *port);
-
-
-void Getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
-                 size_t hostlen, char *serv, size_t servlen, int flags);
-
-void Freeaddrinfo(struct addrinfo *res);
-
+int Open_clientfd(char *hostname, int port);
+int Open_listenfd(int port);
 
 #endif /* __CSAPP_H__ */
 /* $end csapp.h */

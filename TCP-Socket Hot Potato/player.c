@@ -7,6 +7,7 @@
 
 #include "csapp.h"
 
+
 // get address info from hostname
 void getAddrInfo(char* hostName, struct addrinfo *listp)
 {
@@ -33,7 +34,7 @@ void getAddrInfo(char* hostName, struct addrinfo *listp)
 }
 
 // input checker
-void input_parser (int argc, char** argv) {
+void input_parser (int argc, char** argv, struct addrinfo * listp, int* port_num) {
 
     if (argc != 3) {
         printf("Arguments usage: player <machine_name> <port_num>\n");
@@ -41,7 +42,7 @@ void input_parser (int argc, char** argv) {
     }
 
     char* machine_name = argv[1];
-    int port_num = atoi(argv[2]);
+    * port_num = atoi(argv[2]);
     if (port_num <= 0 || 65536 < port_num) {
         printf("ERR: port_num error: %d\n", port_num);
         exit(1);
@@ -49,7 +50,6 @@ void input_parser (int argc, char** argv) {
 
     printf("this is a player with\n");
 
-    struct addrinfo * listp;
     getAddrInfo(machine_name, listp);
 
 
@@ -67,8 +67,15 @@ void input_parser (int argc, char** argv) {
 int main(int argc, char** argv) {
     // argv[1] machine name of ringmaster
     // argv[2] port_num of ringmaster
+    struct addrinfo * listp;
+    int port_num;
 
-    input_parser(argc, argv);
+    input_parser(argc, argv, listp, &port_num);
+
+    int client_fd = Open_clientfd(argv[1], argv[2]);
+
+
+
 
     return 0;
 }
