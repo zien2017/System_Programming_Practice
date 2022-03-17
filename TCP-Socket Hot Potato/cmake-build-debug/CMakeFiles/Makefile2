@@ -60,39 +60,76 @@ CMAKE_SOURCE_DIR = "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato"
 CMAKE_BINARY_DIR = "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug"
 
 #=============================================================================
-# Target rules for target CMakeFiles/TCP_Socket_Hot_Potato.dir
+# Target rules for target CMakeFiles/ringmaster.dir
 
 # All Build rule for target.
-CMakeFiles/TCP_Socket_Hot_Potato.dir/all:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/depend
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=1,2,3 "Built target TCP_Socket_Hot_Potato"
-.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/all
+CMakeFiles/ringmaster.dir/all:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/depend
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=4,5,6 "Built target ringmaster"
+.PHONY : CMakeFiles/ringmaster.dir/all
 
 # Include target in all.
-all: CMakeFiles/TCP_Socket_Hot_Potato.dir/all
+all: CMakeFiles/ringmaster.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/TCP_Socket_Hot_Potato.dir/rule: cmake_check_build_system
+CMakeFiles/ringmaster.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 3
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/TCP_Socket_Hot_Potato.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ringmaster.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 0
-.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/rule
+.PHONY : CMakeFiles/ringmaster.dir/rule
 
 # Convenience name for target.
-TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/rule
+ringmaster: CMakeFiles/ringmaster.dir/rule
 
-.PHONY : TCP_Socket_Hot_Potato
-
-# clean rule for target.
-CMakeFiles/TCP_Socket_Hot_Potato.dir/clean:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/clean
-.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/clean
+.PHONY : ringmaster
 
 # clean rule for target.
-clean: CMakeFiles/TCP_Socket_Hot_Potato.dir/clean
+CMakeFiles/ringmaster.dir/clean:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/clean
+.PHONY : CMakeFiles/ringmaster.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/ringmaster.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/player.dir
+
+# All Build rule for target.
+CMakeFiles/player.dir/all:
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/depend
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=1,2,3 "Built target player"
+.PHONY : CMakeFiles/player.dir/all
+
+# Include target in all.
+all: CMakeFiles/player.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/player.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 3
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/player.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 0
+.PHONY : CMakeFiles/player.dir/rule
+
+# Convenience name for target.
+player: CMakeFiles/player.dir/rule
+
+.PHONY : player
+
+# clean rule for target.
+CMakeFiles/player.dir/clean:
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/clean
+.PHONY : CMakeFiles/player.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/player.dir/clean
 
 .PHONY : clean
 

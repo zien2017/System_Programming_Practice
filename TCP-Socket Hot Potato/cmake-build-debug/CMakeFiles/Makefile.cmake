@@ -41,5 +41,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/TCP_Socket_Hot_Potato.dir/DependInfo.cmake"
+  "CMakeFiles/ringmaster.dir/DependInfo.cmake"
+  "CMakeFiles/player.dir/DependInfo.cmake"
   )

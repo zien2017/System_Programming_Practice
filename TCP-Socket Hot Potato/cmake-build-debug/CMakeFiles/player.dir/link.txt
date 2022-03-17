@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/player.dir/player.c.o CMakeFiles/player.dir/csapp.c.o  -o player 

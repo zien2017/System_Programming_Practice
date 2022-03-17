@@ -111,17 +111,60 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named TCP_Socket_Hot_Potato
+# Target rules for targets named ringmaster
 
 # Build rule for target.
-TCP_Socket_Hot_Potato: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 TCP_Socket_Hot_Potato
-.PHONY : TCP_Socket_Hot_Potato
+ringmaster: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ringmaster
+.PHONY : ringmaster
 
 # fast build rule for target.
-TCP_Socket_Hot_Potato/fast:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/build
-.PHONY : TCP_Socket_Hot_Potato/fast
+ringmaster/fast:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/build
+.PHONY : ringmaster/fast
+
+#=============================================================================
+# Target rules for targets named player
+
+# Build rule for target.
+player: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 player
+.PHONY : player
+
+# fast build rule for target.
+player/fast:
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
+.PHONY : player/fast
+
+csapp.o: csapp.c.o
+
+.PHONY : csapp.o
+
+# target to build an object file
+csapp.c.o:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.o
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.o
+.PHONY : csapp.c.o
+
+csapp.i: csapp.c.i
+
+.PHONY : csapp.i
+
+# target to preprocess a source file
+csapp.c.i:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.i
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.i
+.PHONY : csapp.c.i
+
+csapp.s: csapp.c.s
+
+.PHONY : csapp.s
+
+# target to generate assembly for a file
+csapp.c.s:
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.s
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.s
+.PHONY : csapp.c.s
 
 player.o: player.c.o
 
@@ -129,7 +172,7 @@ player.o: player.c.o
 
 # target to build an object file
 player.c.o:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/player.c.o
 .PHONY : player.c.o
 
 player.i: player.c.i
@@ -138,7 +181,7 @@ player.i: player.c.i
 
 # target to preprocess a source file
 player.c.i:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.i
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/player.c.i
 .PHONY : player.c.i
 
 player.s: player.c.s
@@ -147,7 +190,7 @@ player.s: player.c.s
 
 # target to generate assembly for a file
 player.c.s:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.s
+	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/player.c.s
 .PHONY : player.c.s
 
 ringmaster.o: ringmaster.c.o
@@ -156,7 +199,7 @@ ringmaster.o: ringmaster.c.o
 
 # target to build an object file
 ringmaster.c.o:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/ringmaster.c.o
 .PHONY : ringmaster.c.o
 
 ringmaster.i: ringmaster.c.i
@@ -165,7 +208,7 @@ ringmaster.i: ringmaster.c.i
 
 # target to preprocess a source file
 ringmaster.c.i:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.i
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/ringmaster.c.i
 .PHONY : ringmaster.c.i
 
 ringmaster.s: ringmaster.c.s
@@ -174,7 +217,7 @@ ringmaster.s: ringmaster.c.s
 
 # target to generate assembly for a file
 ringmaster.c.s:
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.s
+	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/ringmaster.c.s
 .PHONY : ringmaster.c.s
 
 # Help Target
@@ -184,8 +227,12 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... TCP_Socket_Hot_Potato"
 	@echo "... edit_cache"
+	@echo "... ringmaster"
+	@echo "... player"
+	@echo "... csapp.o"
+	@echo "... csapp.i"
+	@echo "... csapp.s"
 	@echo "... player.o"
 	@echo "... player.i"
 	@echo "... player.s"

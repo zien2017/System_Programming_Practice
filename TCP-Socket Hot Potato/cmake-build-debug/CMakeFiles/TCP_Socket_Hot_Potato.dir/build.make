@@ -57,33 +57,9 @@ include CMakeFiles/TCP_Socket_Hot_Potato.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/TCP_Socket_Hot_Potato.dir/flags.make
 
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o: CMakeFiles/TCP_Socket_Hot_Potato.dir/flags.make
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o: ../ringmaster.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o   -c "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c"
-
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c" > CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.i
-
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c" -o CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.s
-
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.requires:
-
-.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.requires
-
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.provides: CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.requires
-	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.provides.build
-.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.provides
-
-CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.provides.build: CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o
-
-
 CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o: CMakeFiles/TCP_Socket_Hot_Potato.dir/flags.make
 CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o: ../player.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o   -c "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c"
 
 CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.i: cmake_force
@@ -105,16 +81,40 @@ CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o.provides: CMakeFiles/TCP_Socket_
 CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o.provides.build: CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o
 
 
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o: CMakeFiles/TCP_Socket_Hot_Potato.dir/flags.make
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o: ../csapp.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o   -c "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c"
+
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c" > CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.i
+
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c" -o CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.s
+
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.requires:
+
+.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.requires
+
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.provides: CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.requires
+	$(MAKE) -f CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.provides.build
+.PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.provides
+
+CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.provides.build: CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o
+
+
 # Object files for target TCP_Socket_Hot_Potato
 TCP_Socket_Hot_Potato_OBJECTS = \
-"CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o" \
-"CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
+"CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o" \
+"CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o"
 
 # External object files for target TCP_Socket_Hot_Potato
 TCP_Socket_Hot_Potato_EXTERNAL_OBJECTS =
 
-TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o
 TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o
+TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o
 TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/build.make
 TCP_Socket_Hot_Potato: CMakeFiles/TCP_Socket_Hot_Potato.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable TCP_Socket_Hot_Potato"
@@ -125,8 +125,8 @@ CMakeFiles/TCP_Socket_Hot_Potato.dir/build: TCP_Socket_Hot_Potato
 
 .PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/build
 
-CMakeFiles/TCP_Socket_Hot_Potato.dir/requires: CMakeFiles/TCP_Socket_Hot_Potato.dir/ringmaster.c.o.requires
 CMakeFiles/TCP_Socket_Hot_Potato.dir/requires: CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o.requires
+CMakeFiles/TCP_Socket_Hot_Potato.dir/requires: CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o.requires
 
 .PHONY : CMakeFiles/TCP_Socket_Hot_Potato.dir/requires
 

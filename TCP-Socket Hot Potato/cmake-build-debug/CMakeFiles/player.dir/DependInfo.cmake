@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/TCP_Socket_Hot_Potato.dir/csapp.c.o"
-  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/TCP_Socket_Hot_Potato.dir/player.c.o"
+  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/player.dir/csapp.c.o"
+  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/player.dir/player.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
