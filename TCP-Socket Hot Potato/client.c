@@ -20,6 +20,11 @@
 #define MAXDATASIZE 100 // max number of bytes we can get at once 
 
 
+void client_business (int numbytes, char * buf) {
+    printf("client: received (length = %d) '%s'\n", numbytes, buf);
+}
+
+
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET) {
@@ -81,22 +86,17 @@ int main(int argc, char *argv[]) {
 	freeaddrinfo(servinfo); // all done with this structure
 
     for (int counter = 10; counter > 0; -- counter) {
-
         memset(buf,  0, sizeof(buf));
-
         if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) != -1) {
             buf[numbytes] = '\0';
             for (int temp = 0; temp < numbytes; temp += 13) {
-                printf("client: received (length = %d) '%s'\n", numbytes, buf + temp);
+                client_business(numbytes, buf + temp);
+
             }
-
-
-//            return 0;
         }
     }
 
     close(sockfd);
-    perror("recv");
-    exit(1);
+    return 0;
 }
 

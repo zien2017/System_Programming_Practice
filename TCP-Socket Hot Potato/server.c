@@ -19,6 +19,19 @@
 
 #define BACKLOG 10	 // how many pending connections queue will hold
 
+
+void server_business (int new_fd) {
+    char buf[13] = "msg snum =  \0";
+    for (int counter = 5; counter > 0; -- counter) {
+        buf[11] = (char) (counter + '0');
+
+        if (send(new_fd, buf, 13, 0) == -1)
+            perror("send");
+        printf("server: sent %s\n", buf);
+    }
+}
+
+
 void sigchld_handler(int s)
 {
 	(void)s; // quiet unused variable warning
@@ -124,14 +137,10 @@ int main(void)
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
 
-            char buf[13] = "msg snum =  \0";
-            for (int counter = 5; counter > 0; -- counter) {
-                buf[11] = (char) (counter + '0');
 
-                if (send(new_fd, buf, 13, 0) == -1)
-                    perror("send");
-                printf("server: sent %s\n", buf);
-            }
+            server_business(new_fd);
+
+
 			close(new_fd);
 			exit(0);
 		}
