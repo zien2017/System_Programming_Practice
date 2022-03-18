@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "potato.h"
-#include "csapp.h"
+
 
 // input checker
 void input_parser (int argc, char** argv, int* port_num, int* num_players, int* num_hops) {
@@ -42,13 +42,6 @@ struct _potato * set_potato (int num_hops) {
     return potato;
 }
 
-void sigchld_handler(int sig)
-{
-    while (waitpid(-1, 0, WNOHANG) > 0)
-        ;
-    return;
-}
-
 
 // Arguments usage: ringmaster <port_num> <num_players> <num_hops>
 int main(int argc, char** argv) {
@@ -60,9 +53,6 @@ int main(int argc, char** argv) {
     printf("\tnum_hops is %d\n", num_hops);
 
     struct _potato* potato = set_potato (num_hops);
-
-    int listen_fd = Open_listenfd(&port_num);
-
 
 
 

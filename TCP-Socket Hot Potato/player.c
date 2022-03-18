@@ -2,36 +2,14 @@
 // Created by Brandon on 3/17/2022.
 //
 //
-//#include <stdio.h>
-//#include <stdlib.h>
 
-#include "csapp.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 
-// get address info from hostname
-void getAddrInfo(char* hostName, struct addrinfo *listp)
-{
-    struct addrinfo *p, hints;
-    char buf[MAXLINE];
-    int rc, flags;
-    /* Get a list of addrinfo records */
-    memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET; /* IPv4 only */
-    hints.ai_socktype = SOCK_STREAM; /* Connections only */
-    if ((rc = getaddrinfo(hostName, NULL, &hints, &listp)) != 0) {
-        fprintf(stdout, "Err: getaddrinfo error: %s\n", gai_strerror(rc));
-        exit(1);
-    }
-    /* Walk the list and display each IP address */
-    flags = NI_NUMERICHOST; /* Display address instead of name */
-    for (p = listp; p; p = p->ai_next) {
-        Getnameinfo(p->ai_addr, p->ai_addrlen,
-                    buf, MAXLINE, NULL, 0, flags);
-        printf("\taddr is: %s\n", buf);
-    }
-    /* Clean up */
-    Freeaddrinfo(listp);
-}
+
+
+
 
 // input checker
 void input_parser (int argc, char** argv, struct addrinfo * listp, int* port_num) {
@@ -50,7 +28,6 @@ void input_parser (int argc, char** argv, struct addrinfo * listp, int* port_num
 
     printf("this is a player with\n");
 
-    getAddrInfo(machine_name, listp);
 
 
     printf("\tmachine_name is %s\n", machine_name);
@@ -71,9 +48,6 @@ int main(int argc, char** argv) {
     int port_num;
 
     input_parser(argc, argv, listp, &port_num);
-
-    int client_fd = Open_clientfd(argv[1], argv[2]);
-
 
 
 
