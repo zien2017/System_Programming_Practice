@@ -4,7 +4,6 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/ringmaster.dir/csapp.c.o"
   "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/ringmaster.c" "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/ringmaster.dir/ringmaster.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")

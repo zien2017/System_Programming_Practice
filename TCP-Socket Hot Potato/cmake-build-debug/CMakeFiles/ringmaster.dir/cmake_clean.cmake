@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ringmaster.dir/ringmaster.c.o"
-  "CMakeFiles/ringmaster.dir/csapp.c.o"
   "ringmaster.pdb"
   "ringmaster"
 )

@@ -189,36 +189,6 @@ client.c.s:
 	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client.c.s
 .PHONY : client.c.s
 
-csapp.o: csapp.c.o
-
-.PHONY : csapp.o
-
-# target to build an object file
-csapp.c.o:
-	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.o
-	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.o
-.PHONY : csapp.c.o
-
-csapp.i: csapp.c.i
-
-.PHONY : csapp.i
-
-# target to preprocess a source file
-csapp.c.i:
-	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.i
-	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.i
-.PHONY : csapp.c.i
-
-csapp.s: csapp.c.s
-
-.PHONY : csapp.s
-
-# target to generate assembly for a file
-csapp.c.s:
-	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/csapp.c.s
-	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/csapp.c.s
-.PHONY : csapp.c.s
-
 player.o: player.c.o
 
 .PHONY : player.o
@@ -315,9 +285,6 @@ help:
 	@echo "... client.o"
 	@echo "... client.i"
 	@echo "... client.s"
-	@echo "... csapp.o"
-	@echo "... csapp.i"
-	@echo "... csapp.s"
 	@echo "... player.o"
 	@echo "... player.i"
 	@echo "... player.s"

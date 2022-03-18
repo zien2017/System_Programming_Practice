@@ -103,7 +103,7 @@ clean: CMakeFiles/client.dir/clean
 CMakeFiles/server.dir/all:
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/depend
 	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=9,10 "Built target server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=7,8 "Built target server"
 .PHONY : CMakeFiles/server.dir/all
 
 # Include target in all.
@@ -140,7 +140,7 @@ clean: CMakeFiles/server.dir/clean
 CMakeFiles/ringmaster.dir/all:
 	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/depend
 	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=6,7,8 "Built target ringmaster"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=5,6 "Built target ringmaster"
 .PHONY : CMakeFiles/ringmaster.dir/all
 
 # Include target in all.
@@ -150,7 +150,7 @@ all: CMakeFiles/ringmaster.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/ringmaster.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 3
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ringmaster.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 0
 .PHONY : CMakeFiles/ringmaster.dir/rule
@@ -177,7 +177,7 @@ clean: CMakeFiles/ringmaster.dir/clean
 CMakeFiles/player.dir/all:
 	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/depend
 	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=3,4,5 "Built target player"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" --progress-num=3,4 "Built target player"
 .PHONY : CMakeFiles/player.dir/all
 
 # Include target in all.
@@ -187,7 +187,7 @@ all: CMakeFiles/player.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/player.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 3
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/player.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles" 0
 .PHONY : CMakeFiles/player.dir/rule

@@ -201,14 +201,6 @@
 		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/client.c">
 			<Option target="client"/>
 		</Unit>
-		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.c">
-			<Option target="ringmaster"/>
-			<Option target="player"/>
-		</Unit>
-		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/csapp.h">
-			<Option target="ringmaster"/>
-			<Option target="player"/>
-		</Unit>
 		<Unit filename="/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/player.c">
 			<Option target="player"/>
 		</Unit>

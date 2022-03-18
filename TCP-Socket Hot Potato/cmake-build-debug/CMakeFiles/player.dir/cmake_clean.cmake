@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/player.dir/player.c.o"
-  "CMakeFiles/player.dir/csapp.c.o"
   "player.pdb"
   "player"
 )
