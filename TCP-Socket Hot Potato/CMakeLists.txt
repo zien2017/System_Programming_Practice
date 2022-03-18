@@ -7,3 +7,6 @@ add_executable(ringmaster ringmaster.c potato.h csapp.h csapp.c)
 
 add_executable(player player.c potato.h csapp.h csapp.c)
 
+add_executable(server server.c)
+add_executable(client client.c)
+

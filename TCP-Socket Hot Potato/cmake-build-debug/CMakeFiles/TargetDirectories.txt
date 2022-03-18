@@ -1,4 +1,6 @@
-/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/client.dir
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/server.dir
 /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/ringmaster.dir
 /mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake-build-debug/CMakeFiles/player.dir

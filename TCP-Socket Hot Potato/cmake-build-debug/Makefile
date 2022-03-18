@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = "/mnt/d/Documents/GitHub/malloc_r/TCP-Socket Hot Potato/cmake
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +111,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
+.PHONY : client/fast
+
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+#=============================================================================
 # Target rules for targets named ringmaster
 
 # Build rule for target.
@@ -135,6 +161,33 @@ player: cmake_check_build_system
 player/fast:
 	$(MAKE) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
 .PHONY : player/fast
+
+client.o: client.c.o
+
+.PHONY : client.o
+
+# target to build an object file
+client.c.o:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client.c.o
+.PHONY : client.c.o
+
+client.i: client.c.i
+
+.PHONY : client.i
+
+# target to preprocess a source file
+client.c.i:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client.c.i
+.PHONY : client.c.i
+
+client.s: client.c.s
+
+.PHONY : client.s
+
+# target to generate assembly for a file
+client.c.s:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client.c.s
+.PHONY : client.c.s
 
 csapp.o: csapp.c.o
 
@@ -220,16 +273,48 @@ ringmaster.c.s:
 	$(MAKE) -f CMakeFiles/ringmaster.dir/build.make CMakeFiles/ringmaster.dir/ringmaster.c.s
 .PHONY : ringmaster.c.s
 
+server.o: server.c.o
+
+.PHONY : server.o
+
+# target to build an object file
+server.c.o:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.o
+.PHONY : server.c.o
+
+server.i: server.c.i
+
+.PHONY : server.i
+
+# target to preprocess a source file
+server.c.i:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.i
+.PHONY : server.c.i
+
+server.s: server.c.s
+
+.PHONY : server.s
+
+# target to generate assembly for a file
+server.c.s:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.s
+.PHONY : server.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... client"
+	@echo "... rebuild_cache"
+	@echo "... server"
 	@echo "... ringmaster"
 	@echo "... player"
+	@echo "... client.o"
+	@echo "... client.i"
+	@echo "... client.s"
 	@echo "... csapp.o"
 	@echo "... csapp.i"
 	@echo "... csapp.s"
@@ -239,6 +324,9 @@ help:
 	@echo "... ringmaster.o"
 	@echo "... ringmaster.i"
 	@echo "... ringmaster.s"
+	@echo "... server.o"
+	@echo "... server.i"
+	@echo "... server.s"
 .PHONY : help
 
 
