@@ -27,4 +27,6 @@ sys/socket.h
 -
 arpa/inet.h
 -
+stdbool.h
+-
 

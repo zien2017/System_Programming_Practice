@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 
 #include <arpa/inet.h>
+#include <stdbool.h>
 
 #define PORT "3490" // the port client will be connecting to 
 
@@ -20,8 +21,7 @@
 
 
 // get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
-{
+void *get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET) {
 		return &(((struct sockaddr_in*)sa)->sin_addr);
 	}
@@ -29,9 +29,10 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-int main(int argc, char *argv[])
-{
-	int sockfd, numbytes;  
+
+int main(int argc, char *argv[]) {
+    setbuf(stdout,NULL);
+	int sockfd, numbytes;
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
@@ -79,17 +80,23 @@ int main(int argc, char *argv[])
 
 	freeaddrinfo(servinfo); // all done with this structure
 
-	if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-	    perror("recv");
-	    exit(1);
-	}
+    for (int counter = 10; counter > 0; -- counter) {
 
-	buf[numbytes] = '\0';
+        memset(buf,  0, sizeof(buf));
 
-	printf("client: received '%s'\n",buf);
+        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) != -1) {
+            buf[numbytes] = '\0';
+            for (int temp = 0; temp < numbytes; temp += 13) {
+                printf("client: received (length = %d) '%s'\n", numbytes, buf + temp);
+            }
 
-	close(sockfd);
 
-	return 0;
+//            return 0;
+        }
+    }
+
+    close(sockfd);
+    perror("recv");
+    exit(1);
 }
 

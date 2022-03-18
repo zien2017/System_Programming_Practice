@@ -123,8 +123,15 @@ int main(void)
 
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
-			if (send(new_fd, "Hello, world!", 13, 0) == -1)
-				perror("send");
+
+            char buf[13] = "msg snum =  \0";
+            for (int counter = 5; counter > 0; -- counter) {
+                buf[11] = (char) (counter + '0');
+
+                if (send(new_fd, buf, 13, 0) == -1)
+                    perror("send");
+                printf("server: sent %s\n", buf);
+            }
 			close(new_fd);
 			exit(0);
 		}
