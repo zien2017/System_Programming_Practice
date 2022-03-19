@@ -20,8 +20,30 @@
 #define MAXDATASIZE 100 // max number of bytes we can get at once 
 
 
-void client_business (int numbytes, char * buf) {
-    printf("client: received (length = %d) '%s'\n", numbytes, buf);
+void client_business (int sockfd) {
+    char recv_buf[MAXDATASIZE];
+    char send_buf[13] = "msg snum =  \0";
+
+    // send
+    for (int counter = 5; counter > 0; -- counter) {
+        send_buf[11] = (char) (counter + '0');
+
+        if (send(sockfd, send_buf, 13, 0) == -1)
+            perror("send");
+        printf("server: sent %s\n", send_buf);
+    }
+
+    // recv
+    for (int counter = 10; counter > 0; -- counter) {
+        memset(recv_buf, 0, sizeof(recv_buf));
+        int numbytes;
+        if ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) != -1) {
+            recv_buf[numbytes] = '\0';
+            for (int temp = 0; temp < numbytes; temp += 13) {
+                printf("server: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
+            }
+        }
+    }
 }
 
 
@@ -37,8 +59,8 @@ void *get_in_addr(struct sockaddr *sa) {
 
 int main(int argc, char *argv[]) {
     setbuf(stdout,NULL);
-	int sockfd, numbytes;
-	char buf[MAXDATASIZE];
+	int sockfd;
+
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
@@ -85,16 +107,9 @@ int main(int argc, char *argv[]) {
 
 	freeaddrinfo(servinfo); // all done with this structure
 
-    for (int counter = 10; counter > 0; -- counter) {
-        memset(buf,  0, sizeof(buf));
-        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) != -1) {
-            buf[numbytes] = '\0';
-            for (int temp = 0; temp < numbytes; temp += 13) {
-                client_business(numbytes, buf + temp);
 
-            }
-        }
-    }
+	client_business(sockfd);
+
 
     close(sockfd);
     return 0;

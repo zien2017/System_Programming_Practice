@@ -19,17 +19,35 @@
 
 #define BACKLOG 10	 // how many pending connections queue will hold
 
+#define MAXDATASIZE 100 // max number of bytes we can get at once
 
-void server_business (int new_fd) {
-    char buf[13] = "msg snum =  \0";
+
+void server_business (int sockfd) {
+    char recv_buf[MAXDATASIZE];
+    char send_buf[13] = "msg snum =  \0";
+
+    // send
     for (int counter = 5; counter > 0; -- counter) {
-        buf[11] = (char) (counter + '0');
+        send_buf[11] = (char) (counter + '0');
 
-        if (send(new_fd, buf, 13, 0) == -1)
+        if (send(sockfd, send_buf, 13, 0) == -1)
             perror("send");
-        printf("server: sent %s\n", buf);
+        printf("client: sent %s\n", send_buf);
+    }
+
+    // recv
+    for (int counter = 10; counter > 0; -- counter) {
+        memset(recv_buf, 0, sizeof(recv_buf));
+        int numbytes;
+        if ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) != -1) {
+            recv_buf[numbytes] = '\0';
+            for (int temp = 0; temp < numbytes; temp += 13) {
+                printf("client: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
+            }
+        }
     }
 }
+
 
 
 void sigchld_handler(int s)
