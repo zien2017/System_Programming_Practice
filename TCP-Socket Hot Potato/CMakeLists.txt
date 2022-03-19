@@ -7,6 +7,6 @@ add_executable(ringmaster ringmaster.c potato.h)
 
 add_executable(player player.c potato.h)
 
-add_executable(server server.c)
-add_executable(client client.c)
+add_executable(socket_server socket_server.c)
+add_executable(socket_client socket_client.c)
 

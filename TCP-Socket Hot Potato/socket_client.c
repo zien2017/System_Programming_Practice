@@ -20,6 +20,7 @@
 #define MAXDATASIZE 100 // max number of bytes we can get at once 
 
 
+
 void client_business (int sockfd) {
     char recv_buf[MAXDATASIZE];
     char send_buf[100] = "msg snum =  \0";
@@ -35,9 +36,7 @@ void client_business (int sockfd) {
 
     int numbytes;
     while ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) > 0) {
-
         recv_buf[numbytes] = '\0';
-
         for (int temp = 0; temp < numbytes; temp += 13) {
             printf("client: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
             if (numbytes - temp == 1) {
@@ -61,7 +60,7 @@ void *get_in_addr(struct sockaddr *sa) {
 }
 
 
-int main(int argc, char *argv[]) {
+int client_setup(int argc, char *argv[]) {
     setbuf(stdout,NULL);
 	int sockfd;
 
@@ -119,3 +118,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+int main(int argc, char *argv[]) {
+    return client_setup (argc, argv);
+}
