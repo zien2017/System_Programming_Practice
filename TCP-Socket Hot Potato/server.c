@@ -24,7 +24,7 @@
 
 void server_business (int sockfd) {
     char recv_buf[MAXDATASIZE];
-    char send_buf[13] = "msg snum =  \0";
+    char send_buf[100] = "msg snum =  \0";
 
     // send
     for (int counter = 5; counter > 0; -- counter) {
@@ -32,20 +32,26 @@ void server_business (int sockfd) {
 
         if (send(sockfd, send_buf, 13, 0) == -1)
             perror("send");
-        printf("client: sent %s\n", send_buf);
+        printf("server: sent %s\n", send_buf);
     }
 
+    if (send(sockfd, "c", 1, 0) == -1)
+        perror("send");
+    printf("server: ask for close\n");
+
     // recv
-    for (int counter = 10; counter > 0; -- counter) {
+    for (int counter = 5; counter > 0; -- counter) {
         memset(recv_buf, 0, sizeof(recv_buf));
         int numbytes;
         if ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) != -1) {
             recv_buf[numbytes] = '\0';
             for (int temp = 0; temp < numbytes; temp += 13) {
-                printf("client: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
+                printf("server: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
             }
         }
     }
+//    close();
+
 }
 
 
@@ -73,8 +79,7 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-int main(void)
-{
+int main(void) {
 	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_storage their_addr; // connector's address information
@@ -155,11 +160,10 @@ int main(void)
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
 
-
             server_business(new_fd);
 
+            close(new_fd);
 
-			close(new_fd);
 			exit(0);
 		}
 		close(new_fd);  // parent doesn't need this
