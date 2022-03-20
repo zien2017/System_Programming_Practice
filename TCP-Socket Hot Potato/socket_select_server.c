@@ -81,7 +81,12 @@ int server_setup() {
 
 }
 
-int server_new_connection (int newfd, int fdmax, struct sockaddr_storage remoteaddr, char* remoteIP, fd_set * master_p) {
+int server_new_connection (int listener, int fdmax, char* remoteIP,socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
+    *addrlen_p = sizeof (*remoteaddr_p);
+
+    int newfd = accept(listener, // newly accept()ed socket descriptor
+                   (struct sockaddr *)remoteaddr_p,
+                   addrlen_p);
     // handle new connections
     if (newfd == -1) {
         perror("accept");
@@ -92,8 +97,8 @@ int server_new_connection (int newfd, int fdmax, struct sockaddr_storage remotea
         }
         printf("selectserver: new connection from %s on "
                "socket %d\n",
-               inet_ntop(remoteaddr.ss_family,
-                         get_in_addr((struct sockaddr*)&remoteaddr),
+               inet_ntop(remoteaddr_p->ss_family,
+                         get_in_addr((struct sockaddr*)remoteaddr_p),
                          remoteIP, INET6_ADDRSTRLEN),
                newfd);
     }
@@ -130,7 +135,7 @@ void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, in
 
 int main_loop (int listener) {
     /////////////////////////////////////////////////////////////
-    int newfd;        // newly accept()ed socket descriptor
+
     struct sockaddr_storage remoteaddr; // client address
 
     char buf[256];    // buffer for client data
@@ -167,12 +172,7 @@ int main_loop (int listener) {
         for(i = 0; i <= fdmax; i++) {
             if (FD_ISSET(i, &read_fds)) { // we got one!!
                 if (i == listener) {
-                    addrlen = sizeof remoteaddr;
-                    newfd = accept(listener,
-                                   (struct sockaddr *)&remoteaddr,
-                                   &addrlen);
-
-                    fdmax = server_new_connection (newfd, fdmax, remoteaddr, remoteIP, &master) ;
+                    fdmax = server_new_connection (listener, fdmax, remoteIP, &addrlen, &remoteaddr, &master) ;
                 } else {
                     server_recv_data (i, nbytes, fdmax, listener, buf, sizeof buf, &master) ;
                 } // END handle data from client
