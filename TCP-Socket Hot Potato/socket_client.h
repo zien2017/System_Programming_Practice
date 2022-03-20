@@ -2,6 +2,10 @@
 ** client.c -- a stream socket client demo
 */
 
+
+#ifndef TCP_SOCKET_HOT_POTATO_SOCKET_CLIENT_H
+#define TCP_SOCKET_HOT_POTATO_SOCKET_CLIENT_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,24 +34,21 @@ void *get_in_addr(struct sockaddr *sa) {
 }
 
 
-int client_setup(int argc, char *argv[]) {
+int client_setup(char * hostname, char* port) {
     setbuf(stdout,NULL);
 	int sockfd;
+
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
 
-	if (argc != 2) {
-	    fprintf(stderr,"usage: client hostname\n");
-	    exit(1);
-	}
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 
-	if ((rv = getaddrinfo(argv[1], PORT, &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(hostname, port, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		exit (1);
 	}
@@ -113,16 +114,20 @@ void client_business (int sockfd) {
     close(sockfd);
 }
 
-int server_close (int sockfd) {
+int client_close (int sockfd) {
     return close(sockfd);
 }
 
-int main(int argc, char *argv[]) {
-    int sockfd = client_setup (argc, argv);
+//int main(int argc, char *argv[]) {
+//    int sockfd = client_setup (argc, argv);
+//
+//    client_business(sockfd);
+//
+//    client_close (sockfd);
+//
+//    return 0;
+//}
 
-    client_business(sockfd);
 
-    server_close (sockfd);
 
-    return 0;
-}
+#endif //TCP_SOCKET_HOT_POTATO_SOCKET_CLIENT_H

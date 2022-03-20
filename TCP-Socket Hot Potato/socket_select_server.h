@@ -2,6 +2,10 @@
 ** selectserver.c -- a cheezy multiperson chat server
 */
 
+#ifndef TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H
+#define TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +16,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define PORT "9034"   // port we're listening on
+//#define PORT "9034"   // port we're listening on
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -24,7 +28,7 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-int server_setup() {
+int server_setup(char* port) {
 
     int listener;     // listening socket descriptor
 
@@ -40,7 +44,7 @@ int server_setup() {
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
+	if ((rv = getaddrinfo(NULL, port, &hints, &ai)) != 0) {
 		fprintf(stderr, "select_server: %s\n", gai_strerror(rv));
 		exit(1);
 	}
@@ -183,10 +187,11 @@ int server_main_loop (int listener) {
     return 0;
 }
 
-int main(void) {
-    int listener_fd = server_setup ();
+//int main(void) {
+//    int listener_fd = server_setup ("9034");
+//
+//    server_main_loop(listener_fd);
+//}
+//
 
-    server_main_loop(listener_fd);
-
-
-}
+#endif //TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H

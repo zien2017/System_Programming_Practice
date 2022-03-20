@@ -2,11 +2,13 @@
 // Created by Brandon on 3/17/2022.
 //
 
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "potato.h"
-
+#include "socket_select_server.h"
 
 // input checker
 void input_parser (int argc, char** argv, int* port_num, int* num_players, int* num_hops) {
@@ -54,7 +56,9 @@ int main(int argc, char** argv) {
 
     struct _potato* potato = set_potato (num_hops);
 
+    int listener_fd = server_setup (argv[1]);
 
+    server_main_loop(listener_fd);
 
     return 0;
 }
