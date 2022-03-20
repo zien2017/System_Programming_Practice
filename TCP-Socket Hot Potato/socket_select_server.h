@@ -71,6 +71,7 @@ int server_main_loop (int listener) {
             if (FD_ISSET(i, &read_fds)) { // we got one!!
                 if (i == listener) {
                     fdmax = server_new_connection (listener, fdmax, remoteIP, &addrlen, &remoteaddr, &master) ;
+                    if (fdmax == -1) return 0;
                 } else {
                     server_recv_data (i, nbytes, fdmax, listener, buf, sizeof buf, &master) ;
                 } // END handle data from client

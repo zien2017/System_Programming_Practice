@@ -142,6 +142,15 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
     }
 }
 
+void throw_a_potato () {
+    struct potato * po = malloc(sizeof (struct _potato));
+    if (send(playerInfo_dummy_head->next->player_fd, po, sizeof (struct _potato), 0) == -1) {
+        perror("ERR: send");
+    }
+    printf("sent a potato");
+
+}
+
 void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
     if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
@@ -162,10 +171,8 @@ void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, i
         }
 
         if (connected_player == num_players &&  begin == 0) {
-            initialize_a_ring (listener, fdmax, master_p) ;
-
-            // throw a potato
-
+            initialize_a_ring (listener, fdmax, master_p);
+            throw_a_potato ();
         } else {
             // ending
 
