@@ -8,7 +8,7 @@
 #include "socket_client.h"
 #include "socket_select_server.h"
 
-#define PORT "22222"
+#define PORT "22221"
 
 int sockfd_client_for_ringmaster = 0;
 int sockfd_server_ring_right = 0;
@@ -40,13 +40,10 @@ void input_checker (int argc, char** argv) {
 
 
 void got_msg_from_ringmaster (int nbytes, char* buf) {
-
     buf[nbytes] = '\0';
     printf("client: received (length = %d) '%s'\n", nbytes, buf);
 
-
-    memset(buf, 0, sizeof(buf));
-
+    memset(buf, 0, sizeof(*buf));
 }
 
 void got_msg_from_one_end (int nbytes, char* buf) {
@@ -67,7 +64,7 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         if (newfd > fdmax) {    // keep track of the max
             fdmax = newfd;
         }
-        printf("selectserver: new connection from %s on "
+        printf("player: new connection from %s on "
                "socket %d\n",
                inet_ntop(remoteaddr_p->ss_family,
                          get_in_addr((struct sockaddr *) remoteaddr_p),
@@ -127,7 +124,7 @@ int player_main_loop () {
                 // got error or connection closed by client
                 if (nbytes == 0) {
                     // connection closed
-                    printf("selectserver: socket %d hung up\n", i);
+                    printf("player: socket %d hung up\n", i);
                 } else {
                     perror("recv");
                 }

@@ -18,7 +18,7 @@ struct playerInfo {
     struct playerInfo * next;
 } PlayerInfoNode;;
 
-struct playerInfo * firstPlayerInfo_p;
+struct playerInfo * playerInfo_dummy_head = NULL;
 char player_addrs[255][INET6_ADDRSTRLEN];
 char player_ports[255][5];
 char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
@@ -26,7 +26,7 @@ char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
 
 
 int connected_player = 0;
-int begin = 1;
+int begin = 0;
 
 // input checker
 void input_parser (int argc, char** argv) {
@@ -96,6 +96,52 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
     return fdmax;
 }
 
+void add_one_player (int fd, char* buf, int nbytes) {
+    // add a player
+    ++ connected_player;
+    struct playerInfo * newPlayer = malloc (sizeof (struct playerInfo));
+    // add new player info to the header
+    newPlayer->next = playerInfo_dummy_head->next;
+    playerInfo_dummy_head->next = newPlayer;
+
+
+    // set info for this node
+    newPlayer->player_fd = fd;
+    newPlayer->player_port = atoi(buf);
+    memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
+    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
+    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
+    printf("\t#connected_player = %d\n", connected_player);
+
+}
+
+void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
+    // create a ring by sending neighbor addresses to players
+    begin = 1;
+    printf("creating rings ... ");
+    for(int j = 0; j <= fdmax; j++) {
+        if (FD_ISSET(j, master_p)) {
+            // except the listener
+            if (j == listener) {
+                continue;
+            }
+            // find the p info
+            struct playerInfo * temp_p = playerInfo_dummy_head->next;
+            while (temp_p->player_fd != j) {
+                temp_p = temp_p->next;
+            }
+            if (temp_p->next == NULL) {
+                temp_p = playerInfo_dummy_head;
+            }
+            // send the player info next to him
+            printf("send port %d to fd %d", temp_p->next->player_port, temp_p->next->player_fd);
+            if (send(j, temp_p->next, sizeof(struct playerInfo), 0) == -1) {
+                perror("ERR: send");
+            }
+        }
+    }
+}
+
 void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
     if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
@@ -112,39 +158,13 @@ void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, i
         // we got some data from a client
 
         if (connected_player < num_players) {
-            // add a player
-            ++ connected_player;
-            struct playerInfo * newPlayerInfo = malloc (sizeof (struct playerInfo));
-            // add new player info to the header
-            newPlayerInfo->next = firstPlayerInfo_p;
-            firstPlayerInfo_p = newPlayerInfo;
-            if (connected_player == 1) {
-                newPlayerInfo->next = newPlayerInfo;
-            }
+            add_one_player (fd, buf, nbytes) ;
+        }
 
-            // set info for this node
-            newPlayerInfo->player_fd = fd;
-            newPlayerInfo->player_port = atoi(buf);
-            memcpy(& newPlayerInfo->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
-            printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
-            printf("\tcreate new player %s:%d\n", newPlayerInfo->player_addr, newPlayerInfo->player_port);
-
-        } else if (! begin) {
-            // create a ring by sending neighbor addresses to players
-            for(int j = 0; j <= fdmax; j++) {
-                if (FD_ISSET(j, master_p)) {
-                    // except the listener
-                    if (j != listener) {
-                        if (send(j, buf, nbytes, 0) == -1) {
-                            perror("send");
-                        }
-                    }
-                }
-            }
-
+        if (connected_player == num_players &&  begin == 0) {
+            initialize_a_ring (listener, fdmax, master_p) ;
 
             // throw a potato
-
 
         } else {
             // ending
@@ -177,6 +197,10 @@ void server_close(int socket_fd) {
 // Arguments usage: ringmaster <port_num> <num_players> <num_hops>
 int main(int argc, char** argv) {
     // init
+    playerInfo_dummy_head = malloc(sizeof *playerInfo_dummy_head);
+    playerInfo_dummy_head->next = NULL;
+    playerInfo_dummy_head->player_fd = 256;
+
     memset(player_addrs, 0, sizeof player_addrs);
     memset(player_ports, 0, sizeof player_ports);
     memset(player_fd_to_addr_mapping, 0, sizeof player_fd_to_addr_mapping);
