@@ -118,7 +118,7 @@ void add_one_player (int fd, char* buf, int nbytes) {
 void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
     // create a ring by sending neighbor addresses to players
     begin = 1;
-    printf("creating rings ... ");
+    printf("creating rings ... \n");
     for(int j = 0; j <= fdmax; j++) {
         if (FD_ISSET(j, master_p)) {
             // except the listener
@@ -134,7 +134,7 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
                 temp_p = playerInfo_dummy_head;
             }
             // send the player info next to him
-            printf("send port %d to fd %d", temp_p->next->player_port, temp_p->next->player_fd);
+            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->player_fd);
             if (send(j, temp_p->next, sizeof(struct playerInfo), 0) == -1) {
                 perror("ERR: send");
             }
@@ -145,10 +145,9 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
 void throw_a_potato () {
     struct potato * po = malloc(sizeof (struct _potato));
     if (send(playerInfo_dummy_head->next->player_fd, po, sizeof (struct _potato), 0) == -1) {
-        perror("ERR: send");
+        perror("ERR: send\n");
     }
-    printf("sent a potato");
-
+    printf("sent a potato\n");
 }
 
 void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
@@ -172,6 +171,7 @@ void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, i
 
         if (connected_player == num_players &&  begin == 0) {
             initialize_a_ring (listener, fdmax, master_p);
+            sleep(1);
             throw_a_potato ();
         } else {
             // ending

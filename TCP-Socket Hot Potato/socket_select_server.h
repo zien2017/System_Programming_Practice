@@ -36,7 +36,7 @@ int server_main_loop (int listener) {
 
     struct sockaddr_storage remoteaddr; // client address
 
-    char buf[256];    // buffer for client data
+    char buf[sizeof potato];    // buffer for client data
     int nbytes;
 
     char remoteIP[INET6_ADDRSTRLEN];
@@ -54,7 +54,7 @@ int server_main_loop (int listener) {
     FD_SET(listener, &master);
 
     // keep track of the biggest file descriptor
-    fdmax = listener; // so far, it's this one
+    fdmax = listener;
 
 
     // main loop

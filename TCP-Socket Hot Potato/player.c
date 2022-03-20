@@ -10,7 +10,10 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 
-#define PORT "22222"
+#define PORT "23335"
+
+
+fd_set master, read_fds;
 
 
 struct playerInfo {
@@ -18,11 +21,29 @@ struct playerInfo {
     int player_port;
     int player_fd;
     struct playerInfo * next;
-} PlayerInfoNode;;
+} ;
 
-int sockfd_client_for_ringmaster = 0;
-int sockfd_server_ring_right = 0;
-int sockfd_client_ring_left = 0;
+int sockfd_client_for_ringmaster = -1;
+int sockfd_server_RHS = -1;
+int sockfd_client_LFS = -1;
+
+
+void refresh_fd_set () {
+//    FD_ZERO(&master);    // clear the master and temp sets
+//    FD_ZERO(&read_fds);
+
+    // add the fds to the master set
+    printf("refreshing fd set: ");
+    printf(" %d", sockfd_client_for_ringmaster);
+    printf(" %d", sockfd_client_LFS);
+    printf(" %d\n", sockfd_server_RHS);
+    if (sockfd_client_for_ringmaster != -1)
+        FD_SET(sockfd_client_for_ringmaster, &master);
+    if (sockfd_client_LFS != -1)
+        FD_SET(sockfd_client_LFS, &master);
+    if (sockfd_server_RHS != -1)
+        FD_SET(sockfd_server_RHS, &master);
+}
 
 
 // input checker
@@ -62,31 +83,37 @@ void got_msg_from_ringmaster (int nbytes, char* buf) {
         printf("\taddr %s\n", p_info->player_addr);
         printf("\tport %s\n", port_str);
 
-        // set sockfd_client_ring_left
-        sockfd_client_ring_left = client_setup (p_info->player_addr, port_str);
+        // set sockfd_client_LFS
+        sockfd_client_LFS = client_setup (p_info->player_addr, port_str);
+        FD_SET(sockfd_client_LFS, &master);
 
+        if (send(sockfd_client_LFS, "hi! ", 10, 0) == -1)
+            perror("player send msg : ");
+
+        return;
     }
     if (nbytes == sizeof(potato)) {
-        // assigned to set up a ring
+        // got a potato
         struct _potato * po = (struct potato*) buf;
 
 
-        printf("received potato from ringmaster'\n");
+        printf("received a potato from ringmaster'\n");
         printf("\tremaining_counter %d\n", po->remaining_counter);
 
+        if (send(sockfd_server_RHS, "hi! i have a potato ", 20, 0) == -1)
+            perror("player send msg : ");
+
+        return;
     }
 
 
     printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
-
-
 
 }
 
 void got_msg_from_one_end (int nbytes, char* buf) {
     printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
-    if (send(sockfd_client_for_ringmaster, buf, 10, 0) == -1)
-        perror("send");
+
 }
 
 
@@ -112,47 +139,35 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
                          remoteIP, INET6_ADDRSTRLEN),
                newfd);
     }
-    sockfd_server_ring_right = newfd;
-//    FD_SET(sockfd_server_ring_right, &master);
-//    close(listener);
+    sockfd_server_RHS = newfd;
+
+    FD_SET(sockfd_server_RHS, &master);
     return -1;
 }
 
 void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
-    printf("ERR: No data should be received here!");
+    printf("ERR: No data should be received here!\n");
 }
 
 int player_main_loop () {
 
-    struct sockaddr_storage remoteaddr; // client address
 
-    char buf[256];    // buffer for client data
+    char buf[sizeof potato];    // buffer for client data
     int nbytes;
 
-    char remoteIP[INET6_ADDRSTRLEN];
-
-    fd_set master;    // master file descriptor list
-    fd_set read_fds;  // temp file descriptor list for select()
+//    fd_set master;    // master file descriptor list
+//    fd_set read_fds;  // temp file descriptor list for select()
     int fdmax;        // maximum file descriptor number
-    socklen_t addrlen;
 
-    int i;
-    FD_ZERO(&master);    // clear the master and temp sets
-    FD_ZERO(&read_fds);
+    refresh_fd_set ();
 
-    // add the fds to the master set
-    FD_SET(sockfd_client_for_ringmaster, &master);
-    FD_SET(sockfd_client_ring_left, &master);
-    FD_SET(sockfd_server_ring_right, &master);
 
     // keep track of the biggest file descriptor
-    fdmax = 10;
 
+    fdmax = 10;
 
     // main loop
     for(;;) {
-        FD_SET(sockfd_client_ring_left, &master);
-        FD_SET(sockfd_server_ring_right, &master);
 
         read_fds = master; // copy it
 
@@ -164,7 +179,7 @@ int player_main_loop () {
         }
 
         // run through the existing connections looking for data to read
-        for(i = 0; i <= fdmax; i++) {
+        for(int i = 0; i <= fdmax; i++) {
             // we got one!!
             if ( ! FD_ISSET(i, &read_fds)) {
                 continue;
@@ -183,20 +198,21 @@ int player_main_loop () {
             }
             if (i == sockfd_client_for_ringmaster) {
                 got_msg_from_ringmaster(nbytes, buf);
-
+                continue;
             }
-            if (i == sockfd_client_ring_left) {
+            if (i == sockfd_client_LFS) {
                 got_msg_from_one_end(nbytes, buf);
-
+                continue;
             }
-            if (i == sockfd_server_ring_right) {
+            if (i == sockfd_server_RHS) {
                 got_msg_from_one_end(nbytes, buf);
-
+                continue;
             }
-            else {
 
+            printf("ERR: No data should be received here!\n");
+            printf("ERR: Got msg from un-know fd: %d!\n", i);
 
-            } // END handle data from client
+            // END handle data from client
 
         } // END looping through file descriptors
     } // END for(;;)--and you thought it would never end!
@@ -227,11 +243,13 @@ void* server_main_loop_helper (void* listener) {
 int main(int argc, char** argv) {
     // argv[1] machine name of ringmaster
     // argv[2] port_num of ringmaster
+    FD_ZERO(&master);    // clear the master and temp sets
+    FD_ZERO(&read_fds);
 
     input_checker(argc, argv);
 
 
-    // set sockfd_server_ring_right
+    // set sockfd_server_RHS
     int listener_fd = server_setup (PORT);
 
     pthread_t t;
