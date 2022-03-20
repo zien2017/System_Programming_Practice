@@ -71,7 +71,6 @@ int server_setup() {
 	freeaddrinfo(ai); // all done with this
 
 
-
     // listen
     if (listen(listener, 10) == -1) {
         perror("listen");
@@ -82,18 +81,62 @@ int server_setup() {
 
 }
 
+int server_new_connection (int newfd, int fdmax, struct sockaddr_storage remoteaddr, char* remoteIP, fd_set * master_p) {
+    // handle new connections
+    if (newfd == -1) {
+        perror("accept");
+    } else {
+        FD_SET(newfd, master_p); // add to master set
+        if (newfd > fdmax) {    // keep track of the max
+            fdmax = newfd;
+        }
+        printf("selectserver: new connection from %s on "
+               "socket %d\n",
+               inet_ntop(remoteaddr.ss_family,
+                         get_in_addr((struct sockaddr*)&remoteaddr),
+                         remoteIP, INET6_ADDRSTRLEN),
+               newfd);
+    }
+    return fdmax;
+}
+
+void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+    // handle data from a client
+    if ((nbytes = recv(i, buf, sizeof_buf, 0)) <= 0) {
+        // got error or connection closed by client
+        if (nbytes == 0) {
+            // connection closed
+            printf("selectserver: socket %d hung up\n", i);
+        } else {
+            perror("recv");
+        }
+        close(i); // bye!
+        FD_CLR(i, master_p); // remove from master set
+    } else {
+        // we got some data from a client
+        for(int j = 0; j <= fdmax; j++) {
+            // send to everyone!
+            if (FD_ISSET(j, master_p)) {
+                // except the listener and ourselves
+                if (j != listener && j != i) {
+                    if (send(j, buf, nbytes, 0) == -1) {
+                        perror("send");
+                    }
+                }
+            }
+        }
+    }
+}
 
 int main_loop (int listener) {
     /////////////////////////////////////////////////////////////
     int newfd;        // newly accept()ed socket descriptor
     struct sockaddr_storage remoteaddr; // client address
 
-
     char buf[256];    // buffer for client data
     int nbytes;
 
     char remoteIP[INET6_ADDRSTRLEN];
-
 
     fd_set master;    // master file descriptor list
     fd_set read_fds;  // temp file descriptor list for select()
@@ -111,10 +154,10 @@ int main_loop (int listener) {
     fdmax = listener; // so far, it's this one
 
 
-
     // main loop
     for(;;) {
         read_fds = master; // copy it
+
         if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
             perror("select");
             exit(4);
@@ -124,52 +167,14 @@ int main_loop (int listener) {
         for(i = 0; i <= fdmax; i++) {
             if (FD_ISSET(i, &read_fds)) { // we got one!!
                 if (i == listener) {
-                    // handle new connections
                     addrlen = sizeof remoteaddr;
                     newfd = accept(listener,
                                    (struct sockaddr *)&remoteaddr,
                                    &addrlen);
 
-                    if (newfd == -1) {
-                        perror("accept");
-                    } else {
-                        FD_SET(newfd, &master); // add to master set
-                        if (newfd > fdmax) {    // keep track of the max
-                            fdmax = newfd;
-                        }
-                        printf("selectserver: new connection from %s on "
-                               "socket %d\n",
-                               inet_ntop(remoteaddr.ss_family,
-                                         get_in_addr((struct sockaddr*)&remoteaddr),
-                                         remoteIP, INET6_ADDRSTRLEN),
-                               newfd);
-                    }
+                    fdmax = server_new_connection (newfd, fdmax, remoteaddr, remoteIP, &master) ;
                 } else {
-                    // handle data from a client
-                    if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
-                        // got error or connection closed by client
-                        if (nbytes == 0) {
-                            // connection closed
-                            printf("selectserver: socket %d hung up\n", i);
-                        } else {
-                            perror("recv");
-                        }
-                        close(i); // bye!
-                        FD_CLR(i, &master); // remove from master set
-                    } else {
-                        // we got some data from a client
-                        for(j = 0; j <= fdmax; j++) {
-                            // send to everyone!
-                            if (FD_ISSET(j, &master)) {
-                                // except the listener and ourselves
-                                if (j != listener && j != i) {
-                                    if (send(j, buf, nbytes, 0) == -1) {
-                                        perror("send");
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    server_recv_data (i, nbytes, fdmax, listener, buf, sizeof buf, &master) ;
                 } // END handle data from client
             } // END got new incoming connection
         } // END looping through file descriptors
