@@ -84,7 +84,6 @@ int client_setup(char * hostname, char* port) {
     return sockfd;
 }
 
-void client_business (int sockfd) ;
 
 int client_close (int sockfd) {
     return close(sockfd);
