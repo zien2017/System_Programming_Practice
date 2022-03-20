@@ -23,7 +23,7 @@ char player_addrs[255][INET6_ADDRSTRLEN];
 char player_ports[255][5];
 char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
 
-
+struct _potato * my_potato = NULL;
 
 int connected_player = 0;
 int begin = 0;
@@ -59,11 +59,7 @@ void input_parser (int argc, char** argv) {
 }
 
 // malloc a new potato
-struct _potato * set_potato () {
-    struct _potato * potato = malloc(sizeof(struct _potato));
-    memset(potato, 0, sizeof(struct _potato));
-    return potato;
-}
+
 
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
     *addrlen_p = sizeof (*remoteaddr_p);
@@ -91,7 +87,6 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         memcpy(player_fd_to_addr_mapping[newfd], remoteIP, *addrlen_p);
 
     }
-
 
     return fdmax;
 }
@@ -143,14 +138,16 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
 }
 
 void throw_a_potato () {
-    struct potato * po = malloc(sizeof (struct _potato));
-    if (send(playerInfo_dummy_head->next->player_fd, po, sizeof (struct _potato), 0) == -1) {
+    my_potato = malloc (sizeof (struct _potato));
+    memset(my_potato, 0, sizeof (struct _potato));
+    my_potato->remaining_counter = num_hops;
+    if (send(playerInfo_dummy_head->next->player_fd, my_potato, sizeof (struct _potato), 0) == -1) {
         perror("ERR: send\n");
     }
-    printf("sent a potato\n");
+//    printf("sent a potato\n");
 }
 
-void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+int server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
     if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
         // got error or connection closed by client
@@ -162,44 +159,46 @@ void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, i
         }
         close(fd); // bye!
         FD_CLR(fd, master_p); // remove from master set
-    } else {
-        // we got some data from a client
-
-        if (connected_player < num_players) {
-            add_one_player (fd, buf, nbytes) ;
-        }
-
-        if (connected_player == num_players &&  begin == 0) {
-            initialize_a_ring (listener, fdmax, master_p);
-            sleep(1);
-            throw_a_potato ();
-        } else {
-            // ending
-
-
-        }
-
-
-//        for(int j = 0; j <= fdmax; j++) {
-//            // send to everyone!
-//            if (FD_ISSET(j, master_p)) {
-//                // except the listener and ourselves
-//                if (j != listener && j != fd) {
-//                    if (send(j, buf, nbytes, 0) == -1) {
-//                        perror("send");
-//                    }
-//                }
-//            }
-//        }
+        return 1; // error exit
     }
+
+    // we got some data from a client
+
+    if (connected_player < num_players) {
+        // add new player
+        add_one_player (fd, buf, nbytes) ;
+    }
+
+    if (connected_player == num_players &&  begin == 0) {
+        // start the game
+        initialize_a_ring (listener, fdmax, master_p);
+        sleep(1);
+        throw_a_potato ();
+        return 0;
+    }
+    if (nbytes == sizeof(struct _potato)) {
+        // ending
+        printf("this is the end of the game\n");
+
+
+        return 1;
+    }
+    printf("server recieved a unknow msg\n");
+
+    return 0;
+
 }
 
-void server_close(int socket_fd) {
-    close(socket_fd);
+void free_up_playInfo (struct playerInfo * curr) {
+    if (curr->next != NULL)
+        free_up_playInfo(curr->next);
+    free(curr);
 }
 
-
-
+void free_up_space () {
+    free(my_potato);
+    free_up_playInfo (playerInfo_dummy_head);
+}
 
 // Arguments usage: ringmaster <port_num> <num_players> <num_hops>
 int main(int argc, char** argv) {
@@ -216,15 +215,13 @@ int main(int argc, char** argv) {
     input_parser (argc, argv);
 
 
-
-    struct _potato* potato = set_potato ();
-
-
     int listener_fd = server_setup (argv[1]);
 
     server_main_loop(listener_fd);
 
-    server_close(listener_fd);
+    close(listener_fd);
+
+    free_up_space();
 
     return 0;
 }
