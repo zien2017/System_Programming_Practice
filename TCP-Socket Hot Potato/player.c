@@ -6,13 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "socket_client.h"
-//#include "socket_server.h"
+#include "socket_select_server.h"
 
-#include "pthread.h"
 
 int sockfd_client_for_ringmaster = 0;
-int sockfd_client_ring_left = 0;
 int sockfd_server_ring_right = 0;
+int sockfd_client_ring_left = 0;
+
+
 
 // input checker
 void input_checker (int argc, char** argv) {
@@ -39,19 +40,75 @@ void input_checker (int argc, char** argv) {
 
 void got_msg_from_ringmaster (int nbytes, char* buf) {
 
-    char recv_buf[MAXDATASIZE];
     char send_buf[100] = "msg";
 
-    if (send(sockfd_client_for_ringmaster, send_buf, 3, 0) == -1)
-        perror("send");
-    printf("client: sent %s\n", send_buf);
+//    if (send(sockfd_client_for_ringmaster, send_buf, 3, 0) == -1)
+//        perror("send");
+//
+//    printf("client: sent %s\n", send_buf);
+    buf[nbytes] = '\0';
     printf("client: received (length = %d) '%s'\n", nbytes, buf);
 
 
-    memset(recv_buf, 0, sizeof(recv_buf));
+    memset(buf, 0, sizeof(buf));
 
 }
 
+void got_msg_from_one_end (int nbytes, char* buf) {
+
+}
+
+int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
+    *addrlen_p = sizeof (*remoteaddr_p);
+
+    int newfd = accept(listener, // newly accept()ed socket descriptor
+                       (struct sockaddr *)remoteaddr_p,
+                       addrlen_p);
+    // handle new connections
+    if (newfd == -1) {
+        perror("accept");
+    } else {
+        FD_SET(newfd, master_p); // add to master set
+        if (newfd > fdmax) {    // keep track of the max
+            fdmax = newfd;
+        }
+        printf("selectserver: new connection from %s on "
+               "socket %d\n",
+               inet_ntop(remoteaddr_p->ss_family,
+                         get_in_addr((struct sockaddr *) remoteaddr_p),
+                         remoteIP, INET6_ADDRSTRLEN),
+               newfd);
+    }
+    return 0;
+}
+
+void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+//    // handle data from a client
+//    if ((nbytes = recv(i, buf, sizeof_buf, 0)) <= 0) {
+//        // got error or connection closed by client
+//        if (nbytes == 0) {
+//            // connection closed
+//            printf("selectserver: socket %d hung up\n", i);
+//        } else {
+//            perror("recv");
+//        }
+//        close(i); // bye!
+//        FD_CLR(i, master_p); // remove from master set
+//    } else {
+//        // we got some data from a client
+//        for(int j = 0; j <= fdmax; j++) {
+//            // send to everyone!
+//            if (FD_ISSET(j, master_p)) {
+//                // except the listener and ourselves
+//                if (j != listener && j != i) {
+//                    if (send(j, buf, nbytes, 0) == -1) {
+//                        perror("send");
+//                    }
+//                }
+//            }
+//        }
+//    }
+}
 
 int player_main_loop () {
 
@@ -77,7 +134,7 @@ int player_main_loop () {
     FD_SET(sockfd_server_ring_right, &master);
 
     // keep track of the biggest file descriptor
-    fdmax = 3;
+    fdmax = 4;
 
 
     // main loop
@@ -91,38 +148,42 @@ int player_main_loop () {
 
         // run through the existing connections looking for data to read
         for(i = 0; i <= fdmax; i++) {
-            if (FD_ISSET(i, &read_fds)) { // we got one!!
-                if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
-                    // got error or connection closed by client
-                    if (nbytes == 0) {
-                        // connection closed
-                        printf("selectserver: socket %d hung up\n", i);
-                    } else {
-                        perror("recv");
-                    }
-                    close(i); // bye!
-                    FD_CLR(i, &master); // remove from master set
-                    continue;
-                }
-                if (i == sockfd_client_for_ringmaster) {
-                    got_msg_from_ringmaster(nbytes, buf);
-
+            // we got one!!
+            if ( ! FD_ISSET(i, &read_fds)) {
+                continue;
+            }
+            if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
+                // got error or connection closed by client
+                if (nbytes == 0) {
+                    // connection closed
+                    printf("selectserver: socket %d hung up\n", i);
                 } else {
+                    perror("recv");
+                }
+                close(i); // bye!
+                FD_CLR(i, &master); // remove from master set
+                continue;
+            }
+            if (i == sockfd_client_for_ringmaster) {
+                got_msg_from_ringmaster(nbytes, buf);
+
+            }
+            if (i == sockfd_client_ring_left) {
+                got_msg_from_one_end(nbytes, buf);
+
+            }
+            if (i == sockfd_server_ring_right) {
+                got_msg_from_one_end(nbytes, buf);
+            }
+            else {
 
 
-                } // END handle data from client
+            } // END handle data from client
 
-
-            } // END got new incoming connection
         } // END looping through file descriptors
     } // END for(;;)--and you thought it would never end!
 
     return 0;
-}
-
-
-void client_business_for_ring (int sockfd) {
-
 }
 
 
@@ -138,10 +199,21 @@ int main(int argc, char** argv) {
 
     input_checker(argc, argv);
 
+    // set sockfd_server_ring_right
+    int listener_fd = server_setup ("2222");
 
+
+    // set client fd from ringmaster
     sockfd_client_for_ringmaster = client_setup (argv[1], argv[2]);
 
+//    ring_setup();
+
+    // set sockfd_client_ring_left
+//    sockfd_client_ring_left = client_setup (NULL, NULL);
+
+    // main loop
     player_main_loop();
+
 
     client_close (sockfd_client_for_ringmaster);
 
