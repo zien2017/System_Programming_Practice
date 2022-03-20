@@ -20,7 +20,7 @@
 #include <stdbool.h>
 
 //#define PORT "3490" // the port client will be connecting to
-#define PORT "9034" // the port client will be connecting to
+//#define PORT "9034" // the port client will be connecting to
 
 #define MAXDATASIZE 100 // max number of bytes we can get at once
 
@@ -37,7 +37,6 @@ void *get_in_addr_c(struct sockaddr *sa) {
 int client_setup(char * hostname, char* port) {
     setbuf(stdout,NULL);
 	int sockfd;
-
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv;

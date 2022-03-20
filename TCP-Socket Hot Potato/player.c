@@ -7,13 +7,21 @@
 #include <stdlib.h>
 #include "socket_client.h"
 #include "socket_select_server.h"
+#include <pthread.h>
 
-#define PORT "22221"
+#define PORT "22223"
+
+
+struct playerInfo {
+    char player_addr[INET6_ADDRSTRLEN];
+    int player_port;
+    int player_fd;
+    struct playerInfo * next;
+} PlayerInfoNode;;
 
 int sockfd_client_for_ringmaster = 0;
 int sockfd_server_ring_right = 0;
 int sockfd_client_ring_left = 0;
-
 
 
 // input checker
@@ -41,14 +49,42 @@ void input_checker (int argc, char** argv) {
 
 void got_msg_from_ringmaster (int nbytes, char* buf) {
     buf[nbytes] = '\0';
-    printf("client: received (length = %d) '%s'\n", nbytes, buf);
+
+    if (nbytes == 64) {
+        // assigned to set up a ring
+        struct playerInfo* p_info = (struct playerInfo*) buf;
+
+        char port_str[6];
+        sprintf(port_str, "%d", p_info->player_port);
+
+        printf("received player info from master'\n");
+        printf("\taddr %s\n", p_info->player_addr);
+        printf("\tport %s\n", port_str);
+
+
+
+        // set sockfd_client_ring_left
+        sockfd_client_ring_left = client_setup (p_info->player_addr, port_str);
+
+        char sayHi[] = "hello world from port :  ";
+        if (send(sockfd_client_for_ringmaster, sayHi, 10, 0) == -1)
+            perror("send");
+        if (send(sockfd_client_for_ringmaster, PORT, 10, 0) == -1)
+            perror("send");
+
+    }
+    else {
+        printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
+    }
 
     memset(buf, 0, sizeof(*buf));
 }
 
 void got_msg_from_one_end (int nbytes, char* buf) {
-
+    printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
 }
+
+
 
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
     *addrlen_p = sizeof (*remoteaddr_p);
@@ -61,9 +97,9 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         perror("accept");
     } else {
         FD_SET(newfd, master_p); // add to master set
-        if (newfd > fdmax) {    // keep track of the max
-            fdmax = newfd;
-        }
+//        if (newfd > fdmax) {    // keep track of the max
+//            fdmax = newfd;
+//        }
         printf("player: new connection from %s on "
                "socket %d\n",
                inet_ntop(remoteaddr_p->ss_family,
@@ -71,7 +107,9 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
                          remoteIP, INET6_ADDRSTRLEN),
                newfd);
     }
-    return 0;
+    sockfd_server_ring_right = newfd;
+    close(listener);
+    return newfd;
 }
 
 void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
@@ -156,13 +194,17 @@ int player_main_loop () {
 
 
 void register_to_ringmaster () {
-
 //    char send_buf[100] = "\0";
 
     if (send(sockfd_client_for_ringmaster, PORT, 10, 0) == -1)
         perror("send");
 
     printf("my port is %s\n", PORT);
+}
+
+void* server_main_loop_helper (void* listener) {
+    server_main_loop(*(int*) listener);
+    pthread_exit(NULL);
 }
 
 /*
@@ -180,6 +222,9 @@ int main(int argc, char** argv) {
     // set sockfd_server_ring_right
     int listener_fd = server_setup (PORT);
 
+    pthread_t t;
+    pthread_create(&t, NULL, server_main_loop_helper, (void*)& listener_fd);
+
 
     // set client fd from ringmaster
     sockfd_client_for_ringmaster = client_setup (argv[1], argv[2]);
@@ -190,13 +235,7 @@ int main(int argc, char** argv) {
     // main loop
     player_main_loop();
 
-//    ring_setup();
-
-    // set sockfd_client_ring_left
-//    sockfd_client_ring_left = client_setup (NULL, NULL);
-
-
-
+    pthread_join(t, NULL);
 
     client_close (sockfd_client_for_ringmaster);
 
