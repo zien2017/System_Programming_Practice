@@ -18,38 +18,7 @@
 //#define PORT "3490" // the port client will be connecting to
 #define PORT "9034" // the port client will be connecting to
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once 
-
-
-
-void client_business (int sockfd) {
-    char recv_buf[MAXDATASIZE];
-    char send_buf[100] = "msg snum =  \0";
-
-    // send
-    for (int counter = 5; counter > 0; -- counter) {
-        send_buf[11] = (char) (counter + '0');
-
-        if (send(sockfd, send_buf, 13, 0) == -1)
-            perror("send");
-        printf("client: sent %s\n", send_buf);
-    }
-
-    int numbytes;
-    while ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) > 0) {
-        recv_buf[numbytes] = '\0';
-        for (int temp = 0; temp < numbytes; temp += 13) {
-            printf("client: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
-            if (numbytes - temp == 1) {
-                close(sockfd);
-                printf("client: closed by server.");
-                return;
-            }
-        }
-        memset(recv_buf, 0, sizeof(recv_buf));
-    }
-}
-
+#define MAXDATASIZE 100 // max number of bytes we can get at once
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa) {
@@ -80,7 +49,7 @@ int client_setup(int argc, char *argv[]) {
 
 	if ((rv = getaddrinfo(argv[1], PORT, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return 1;
+		exit (1);
 	}
 
 	// loop through all the results and connect to the first we can
@@ -102,7 +71,7 @@ int client_setup(int argc, char *argv[]) {
 
 	if (p == NULL) {
 		fprintf(stderr, "client: failed to connect\n");
-		return 2;
+		exit(2);
 	}
 
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
@@ -111,14 +80,49 @@ int client_setup(int argc, char *argv[]) {
 
 	freeaddrinfo(servinfo); // all done with this structure
 
+    return sockfd;
+}
 
-	client_business(sockfd);
+void client_business (int sockfd) {
+    char recv_buf[MAXDATASIZE];
+    char send_buf[100] = "msg snum =  \0";
 
+    // send
+    for (int counter = 5; counter > 0; -- counter) {
+        send_buf[11] = (char) (counter + '0');
 
+        if (send(sockfd, send_buf, 13, 0) == -1)
+            perror("send");
+        printf("client: sent %s\n", send_buf);
+    }
+
+    // recv
+    int numbytes;
+    while ((numbytes = recv(sockfd, recv_buf, MAXDATASIZE - 1, 0)) != -1) {
+        recv_buf[numbytes] = '\0';
+        for (int temp = 0; temp < numbytes; temp += 13) {
+            printf("client: received (length = %d) '%s'\n", numbytes, recv_buf + temp);
+            if (numbytes - temp == 1) {
+                close(sockfd);
+                printf("client: closed by server.");
+                return;
+            }
+        }
+        memset(recv_buf, 0, sizeof(recv_buf));
+    }
     close(sockfd);
-    return 0;
+}
+
+int server_close (int sockfd) {
+    return close(sockfd);
 }
 
 int main(int argc, char *argv[]) {
-    return client_setup (argc, argv);
+    int sockfd = client_setup (argc, argv);
+
+    client_business(sockfd);
+
+    server_close (sockfd);
+
+    return 0;
 }

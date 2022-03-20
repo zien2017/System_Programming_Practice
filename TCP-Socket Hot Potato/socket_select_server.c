@@ -133,7 +133,7 @@ void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, in
     }
 }
 
-int main_loop (int listener) {
+int server_main_loop (int listener) {
     /////////////////////////////////////////////////////////////
 
     struct sockaddr_storage remoteaddr; // client address
@@ -185,5 +185,8 @@ int main_loop (int listener) {
 
 int main(void) {
     int listener_fd = server_setup ();
-    main_loop(listener_fd);
+
+    server_main_loop(listener_fd);
+
+
 }
