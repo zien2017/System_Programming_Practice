@@ -10,10 +10,23 @@
 
 
 int port_num, num_players, num_hops;
+
+struct playerInfo {
+    char player_addr[INET6_ADDRSTRLEN];
+    int player_port;
+    int player_fd;
+    struct playerInfo * next;
+} PlayerInfoNode;;
+
+struct playerInfo * firstPlayerInfo_p;
 char player_addrs[255][INET6_ADDRSTRLEN];
 char player_ports[255][5];
 char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
+
+
+
 int connected_player = 0;
+int begin = 1;
 
 // input checker
 void input_parser (int argc, char** argv) {
@@ -99,13 +112,43 @@ void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, i
         // we got some data from a client
 
         if (connected_player < num_players) {
+            // add a player
             ++ connected_player;
-            memcpy(player_ports[connected_player - 1], buf, nbytes);
-            memcpy(player_addrs[connected_player - 1], player_fd_to_addr_mapping[fd], nbytes);
+            struct playerInfo * newPlayerInfo = malloc (sizeof (struct playerInfo));
+            // add new player info to the header
+            newPlayerInfo->next = firstPlayerInfo_p;
+            firstPlayerInfo_p = newPlayerInfo;
+            if (connected_player == 1) {
+                newPlayerInfo->next = newPlayerInfo;
+            }
+
+            // set info for this node
+            newPlayerInfo->player_fd = fd;
+            newPlayerInfo->player_port = atoi(buf);
+            memcpy(& newPlayerInfo->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
             printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
-            printf("create new player %s:%s\n", player_addrs[connected_player - 1], player_ports[connected_player - 1]);
+            printf("\tcreate new player %s:%d\n", newPlayerInfo->player_addr, newPlayerInfo->player_port);
+
+        } else if (! begin) {
+            // create a ring by sending neighbor addresses to players
+            for(int j = 0; j <= fdmax; j++) {
+                if (FD_ISSET(j, master_p)) {
+                    // except the listener
+                    if (j != listener) {
+                        if (send(j, buf, nbytes, 0) == -1) {
+                            perror("send");
+                        }
+                    }
+                }
+            }
+
+
+            // throw a potato
+
 
         } else {
+            // ending
+
 
         }
 
@@ -133,6 +176,7 @@ void server_close(int socket_fd) {
 
 // Arguments usage: ringmaster <port_num> <num_players> <num_hops>
 int main(int argc, char** argv) {
+    // init
     memset(player_addrs, 0, sizeof player_addrs);
     memset(player_ports, 0, sizeof player_ports);
     memset(player_fd_to_addr_mapping, 0, sizeof player_fd_to_addr_mapping);

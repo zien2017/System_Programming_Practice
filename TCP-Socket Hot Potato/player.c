@@ -165,7 +165,7 @@ void register_to_ringmaster () {
     if (send(sockfd_client_for_ringmaster, PORT, 10, 0) == -1)
         perror("send");
 
-    printf("%s\n", PORT);
+    printf("my port is %s\n", PORT);
 }
 
 /*

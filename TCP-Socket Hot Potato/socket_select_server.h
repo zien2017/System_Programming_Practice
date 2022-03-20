@@ -110,6 +110,7 @@ int server_setup(char* port) {
 			continue;
 		}
 
+
 		// lose the pesky "address already in use" error message
 		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
@@ -118,7 +119,14 @@ int server_setup(char* port) {
 			continue;
 		}
 
-		break;
+        // get random port
+
+//        struct sockaddr_in addr;
+//        int size=sizeof(addr);
+//        getsockname(listener, (void*) &addr, (socklen_t *) & size);
+//        printf("new port is %d", addr.sin_port);
+
+        break;
 	}
 
 	// if we got here, it means we didn't get bound
