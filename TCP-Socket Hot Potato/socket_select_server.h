@@ -30,7 +30,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) ;
 
-void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p);
+void server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p);
 
 int server_main_loop (int listener) {
 

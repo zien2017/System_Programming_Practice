@@ -8,6 +8,7 @@
 #include "socket_client.h"
 #include "socket_select_server.h"
 
+#define PORT "22222"
 
 int sockfd_client_for_ringmaster = 0;
 int sockfd_server_ring_right = 0;
@@ -40,12 +41,6 @@ void input_checker (int argc, char** argv) {
 
 void got_msg_from_ringmaster (int nbytes, char* buf) {
 
-    char send_buf[100] = "msg";
-
-//    if (send(sockfd_client_for_ringmaster, send_buf, 3, 0) == -1)
-//        perror("send");
-//
-//    printf("client: sent %s\n", send_buf);
     buf[nbytes] = '\0';
     printf("client: received (length = %d) '%s'\n", nbytes, buf);
 
@@ -83,31 +78,7 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
 }
 
 void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
-//    // handle data from a client
-//    if ((nbytes = recv(i, buf, sizeof_buf, 0)) <= 0) {
-//        // got error or connection closed by client
-//        if (nbytes == 0) {
-//            // connection closed
-//            printf("selectserver: socket %d hung up\n", i);
-//        } else {
-//            perror("recv");
-//        }
-//        close(i); // bye!
-//        FD_CLR(i, master_p); // remove from master set
-//    } else {
-//        // we got some data from a client
-//        for(int j = 0; j <= fdmax; j++) {
-//            // send to everyone!
-//            if (FD_ISSET(j, master_p)) {
-//                // except the listener and ourselves
-//                if (j != listener && j != i) {
-//                    if (send(j, buf, nbytes, 0) == -1) {
-//                        perror("send");
-//                    }
-//                }
-//            }
-//        }
-//    }
+    printf("ERR: No data should be received here!");
 }
 
 int player_main_loop () {
@@ -187,6 +158,15 @@ int player_main_loop () {
 }
 
 
+void register_to_ringmaster () {
+
+//    char send_buf[100] = "\0";
+
+    if (send(sockfd_client_for_ringmaster, PORT, 10, 0) == -1)
+        perror("send");
+
+    printf("%s\n", PORT);
+}
 
 /*
  * Arguments usage: player <machine_name> <port_num>
@@ -199,20 +179,26 @@ int main(int argc, char** argv) {
 
     input_checker(argc, argv);
 
+
     // set sockfd_server_ring_right
-    int listener_fd = server_setup ("2222");
+    int listener_fd = server_setup (PORT);
 
 
     // set client fd from ringmaster
     sockfd_client_for_ringmaster = client_setup (argv[1], argv[2]);
+
+    // register to the ringmaster
+    register_to_ringmaster ();
+
+    // main loop
+    player_main_loop();
 
 //    ring_setup();
 
     // set sockfd_client_ring_left
 //    sockfd_client_ring_left = client_setup (NULL, NULL);
 
-    // main loop
-    player_main_loop();
+
 
 
     client_close (sockfd_client_for_ringmaster);
