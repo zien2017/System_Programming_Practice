@@ -109,33 +109,7 @@ int server_new_connection (int listener, int fdmax, char* remoteIP,socklen_t * a
     return fdmax;
 }
 
-void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
-    // handle data from a client
-    if ((nbytes = recv(i, buf, sizeof_buf, 0)) <= 0) {
-        // got error or connection closed by client
-        if (nbytes == 0) {
-            // connection closed
-            printf("selectserver: socket %d hung up\n", i);
-        } else {
-            perror("recv");
-        }
-        close(i); // bye!
-        FD_CLR(i, master_p); // remove from master set
-    } else {
-        // we got some data from a client
-        for(int j = 0; j <= fdmax; j++) {
-            // send to everyone!
-            if (FD_ISSET(j, master_p)) {
-                // except the listener and ourselves
-                if (j != listener && j != i) {
-                    if (send(j, buf, nbytes, 0) == -1) {
-                        perror("send");
-                    }
-                }
-            }
-        }
-    }
-}
+void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) ;
 
 int server_main_loop (int listener) {
     /////////////////////////////////////////////////////////////
@@ -187,11 +161,10 @@ int server_main_loop (int listener) {
     return 0;
 }
 
-//int main(void) {
-//    int listener_fd = server_setup ("9034");
-//
-//    server_main_loop(listener_fd);
-//}
-//
+void server_close(int socket_fd) {
+    close(socket_fd);
+}
+
+
 
 #endif //TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H

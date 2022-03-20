@@ -2,8 +2,6 @@
 // Created by Brandon on 3/17/2022.
 //
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,7 +58,37 @@ int main(int argc, char** argv) {
 
     server_main_loop(listener_fd);
 
+    server_close(listener_fd);
+
     return 0;
 }
 
+
+void server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+    // handle data from a client
+    if ((nbytes = recv(i, buf, sizeof_buf, 0)) <= 0) {
+        // got error or connection closed by client
+        if (nbytes == 0) {
+            // connection closed
+            printf("selectserver: socket %d hung up\n", i);
+        } else {
+            perror("recv");
+        }
+        close(i); // bye!
+        FD_CLR(i, master_p); // remove from master set
+    } else {
+        // we got some data from a client
+        for(int j = 0; j <= fdmax; j++) {
+            // send to everyone!
+            if (FD_ISSET(j, master_p)) {
+                // except the listener and ourselves
+                if (j != listener && j != i) {
+                    if (send(j, buf, nbytes, 0) == -1) {
+                        perror("send");
+                    }
+                }
+            }
+        }
+    }
+}
 
