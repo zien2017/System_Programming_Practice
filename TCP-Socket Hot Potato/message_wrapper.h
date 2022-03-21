@@ -12,7 +12,7 @@ enum msg_type {
     REGISTER,
     POTATO,
     PLAYER_INFO,
-    ASSIGN_ID,
+    REGISTER_RET,
     READY,
     ACK,
 };
@@ -20,6 +20,11 @@ enum msg_type {
 struct msg_header {
     int size;
     enum msg_type type;
+};
+
+struct register_ret {
+    int player_id;
+    int num_player;
 };
 
 struct playerInfo {

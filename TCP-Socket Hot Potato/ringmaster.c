@@ -85,8 +85,11 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
 }
 
 void assign_player_id (int fd, struct playerInfo * player_info) {
-    printf("Player %d is ready to play\n", player_info->player_id);
-    wrap_and_send_msg(fd, ASSIGN_ID, &player_info->player_id, sizeof (int));
+    struct register_ret ret;
+    ret.player_id = player_info->player_id;
+    ret.num_player = num_players;
+    wrap_and_send_msg(fd, REGISTER_RET, &ret, sizeof (ret));
+    printf("Player %d is ready to play\n", ret.player_id);
 }
 
 struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
@@ -192,7 +195,7 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     if (h->type == READY) {
         // got ready info from a player
         ++ ready_player;
-        printf("[Debug] ready fd = %d\n", fd);
+//        printf("[Debug] ready fd = %d\n", fd);
         if (ready_player == num_players){
             setup_and_throw_a_potato();
         }

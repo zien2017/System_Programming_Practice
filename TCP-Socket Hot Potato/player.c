@@ -10,13 +10,14 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 #include "message_wrapper.h"
-#define PORT "30003"
+#define PORT "30001"
 
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
 int fdmax = 10;
 int player_id = -1;
+int num_player = -1;
 
 int listener_fd;
 int fd_ringmaster = -1;
@@ -219,8 +220,10 @@ int player_main_loop () {
                 printf("Received str: %s\n", buf);
                 continue;
             }
-            if (h->type == ASSIGN_ID) {
-                player_id = *((int*)buf);
+            if (h->type == REGISTER_RET) {
+                struct register_ret ret = *((struct register_ret*)buf);
+                num_player = ret.num_player;
+                player_id = ret.player_id;
                 printf("\tmy id is %d\n", player_id);
                 continue;
             }
@@ -255,10 +258,6 @@ void register_to_ringmaster () {
     printf("\tmy port is %s\n", PORT);
 }
 
-//void* server_main_loop_helper (void* listener) {
-//    server_main_loop(*(int*) listener);
-////    pthread_exit(NULL);
-//}
 
 /*
  * Arguments usage: player <machine_name> <port_num>
