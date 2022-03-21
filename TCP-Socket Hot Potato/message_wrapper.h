@@ -38,22 +38,14 @@ struct playerInfo {
 void wrap_and_send_msg (int fd, enum msg_type type, void* msg_body, int size) {
     char temp_buf[sizeof (struct msg_header) + size];
 
-
     struct msg_header header;
     header.size = size;
     header.type = type;
 
-<<<<<<< HEAD
     memcpy(temp_buf, &header, sizeof (struct msg_header));
     if (msg_body != NULL){
         memcpy(temp_buf + sizeof (struct msg_header), msg_body, size);
     }
-=======
-    memcpy((void*) temp_buf, (void*) &header, sizeof (struct msg_header));
-    memcpy((void*) temp_buf + sizeof (struct msg_header), msg_body, size);
-
-
->>>>>>> f8b5d5d4833faf3c19ed5b0c9177e7b3c82c8ac4
 
     if (send(fd, temp_buf, sizeof(temp_buf), 0) == -1)
         perror("MSG sending failure ");

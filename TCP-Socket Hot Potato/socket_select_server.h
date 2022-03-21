@@ -82,66 +82,53 @@ int server_main_loop (int listener) {
 
 }
 
-// if port == 0, it would generate a new port and rewrite to char* port
-int server_setup(char* port, int* new_port) {
+
+int server_setup(char* port) {
 
     int listener;     // listening socket descriptor
 
     int yes = 1;        // for setsockopt() SO_REUSEADDR, below
     int rv;
 
-	struct addrinfo hints, *ai, *p;
+    struct addrinfo hints, *ai, *p;
 
-    if (port == NULL) {
-        port = "0";
+
+    // get us a socket and bind it
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    if ((rv = getaddrinfo(NULL, port, &hints, &ai)) != 0) {
+        fprintf(stderr, "select_server: %s\n", gai_strerror(rv));
+        exit(1);
     }
 
-	// get us a socket and bind it
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-
-	if ((rv = getaddrinfo(NULL, port, &hints, &ai)) != 0) {
-		fprintf(stderr, "select_server: %s\n", gai_strerror(rv));
-		exit(1);
-	}
-
-	for(p = ai; p != NULL; p = p->ai_next) {
-    	listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-		if (listener < 0) {
-			continue;
-		}
-
-
-		// lose the pesky "address already in use" error message
-		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
-
-		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
-			close(listener);
-			continue;
-		}
-
-<<<<<<< HEAD
-=======
-        if (new_port != NULL) {
-            // get random port and rewrite back to char* port
-            struct sockaddr_in addr;
-            int size=sizeof(addr);
-            getsockname(listener, (void*) &addr, (socklen_t *) & size);
-            *new_port = addr.sin_port;
+    for(p = ai; p != NULL; p = p->ai_next) {
+        listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (listener < 0) {
+            continue;
         }
->>>>>>> f8b5d5d4833faf3c19ed5b0c9177e7b3c82c8ac4
+
+
+        // lose the pesky "address already in use" error message
+        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+
+        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
+            close(listener);
+            continue;
+        }
+
         break;
-	}
+    }
 
-	// if we got here, it means we didn't get bound
-	if (p == NULL) {
-		fprintf(stderr, "selectserver: failed to bind\n");
-		exit(2);
-	}
+    // if we got here, it means we didn't get bound
+    if (p == NULL) {
+        fprintf(stderr, "selectserver: failed to bind\n");
+        exit(2);
+    }
 
-	freeaddrinfo(ai); // all done with this
+    freeaddrinfo(ai); // all done with this
 
 
     // listen
