@@ -20,7 +20,8 @@ char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
 //struct _potato * my_potato = NULL;
 
 int connected_player = 0;
-int begin = 0;
+int ready_player = 0;
+int start = 0;
 
 // input checker
 void input_parser (int argc, char** argv) {
@@ -111,7 +112,7 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
 
 void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
     // create a ring by sending neighbor addresses to players
-    begin = 1;
+    start = 1;
     printf("creating rings ... \n");
     for(int j = 0; j <= fdmax; j++) {
         if (FD_ISSET(j, master_p)) {
@@ -165,23 +166,33 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
 
     // we got some data from a client
 
-    if (h->type == REGISTER && connected_player < num_players) {
+    if (h->type == REGISTER && connected_player < num_players - 1 && start == 0) {
         // add new player
         assign_player_id (fd, add_one_player (fd, body_buf, h->size));
+        return 0;
     }
-
-    if (h->type == REGISTER && connected_player == num_players && begin == 0) {
+    if (h->type == REGISTER && connected_player == num_players - 1 && start == 0) {
+        // start the game
+        // add the last player
+        assign_player_id (fd, add_one_player (fd, body_buf, h->size));
         // start the game
         initialize_a_ring (listener, fdmax, master_p);
-        sleep(1);
-        setup_and_throw_a_potato();
+        return 0;
+    }
+    if (h->type == READY) {
+        // got ready info from a player
+        ++ ready_player;
+        printf("player with fd = %d ready\n", fd);
+        if (ready_player == num_players){
+            setup_and_throw_a_potato();
+        }
         return 0;
     }
     if (h->type == POTATO) {
         // ending
         printf("this is the end of the game\n");
         print_trace((struct _potato*)body_buf);
-        return 1;
+        return 1; // escape the forever loop
     }
 
     printf("ERR: ringmaster: received a unknown msg!\n");

@@ -38,7 +38,9 @@ void wrap_and_send_msg (int fd, enum msg_type type, void* msg_body, int size) {
     header.type = type;
 
     memcpy(temp_buf, &header, sizeof (struct msg_header));
-    memcpy(temp_buf + sizeof (struct msg_header), msg_body, size);
+    if (msg_body != NULL){
+        memcpy(temp_buf + sizeof (struct msg_header), msg_body, size);
+    }
 
     if (send(fd, temp_buf, sizeof(temp_buf), 0) == -1)
         perror("MSG sending failure ");
@@ -60,7 +62,9 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
         return -1;
     }
     memcpy(header, temp_buf, sizeof (struct msg_header));
-    memcpy(msg_body, temp_buf + sizeof (struct msg_header), header->size);
+    if (header->size > 0){
+        memcpy(msg_body, temp_buf + sizeof (struct msg_header), header->size);
+    }
     if (total_size - sizeof (struct msg_header) != header->size) {
         printf("wrapper: incomplete msg received! from %d \n", fd);
         close(fd);

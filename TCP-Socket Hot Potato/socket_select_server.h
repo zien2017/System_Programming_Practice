@@ -1,6 +1,3 @@
-/*
-** selectserver.c -- a cheezy multiperson chat server
-*/
 
 #ifndef TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H
 #define TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H
@@ -121,13 +118,6 @@ int server_setup(char* port) {
 			close(listener);
 			continue;
 		}
-
-        // get random port
-
-//        struct sockaddr_in addr;
-//        int size=sizeof(addr);
-//        getsockname(listener, (void*) &addr, (socklen_t *) & size);
-//        printf("new port is %d", addr.sin_port);
 
         break;
 	}

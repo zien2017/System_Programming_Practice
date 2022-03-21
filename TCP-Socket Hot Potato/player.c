@@ -10,7 +10,7 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 #include "message_wrapper.h"
-#define PORT "22389"
+#define PORT "30003"
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
@@ -20,6 +20,7 @@ int player_id = -1;
 int fd_ringmaster = -1;
 int fd_client_LHS = -1;
 int fd_server_RHS = -1;
+
 
 
 void refresh_fd_set () {
@@ -81,7 +82,13 @@ void throw_potato(char* buf ){
         -- p->remaining_counter;
         // next hop give back to ringmaster
 
-        wrap_and_send_msg(fd_server_RHS, POTATO, p, sizeof (struct _potato));
+        if ( rand() % 2 ) {
+            printf("sent to right!\n");
+            wrap_and_send_msg(fd_server_RHS, POTATO, p, sizeof (struct _potato));
+        } else {
+            printf("sent to left!\n");
+            wrap_and_send_msg(fd_client_LHS, POTATO, p, sizeof (struct _potato));
+        }
     }
 }
 
@@ -100,13 +107,22 @@ void connect_to_adjacent_player (char* buf) {
     fd_client_LHS = client_setup (p_info->player_addr, port_str);
     refresh_fd_set();
 
+    char hi_from_right [30] ;
+    sprintf(hi_from_right, "hi from right (id = %d)", player_id);
+
+    char hi_from_left [30] ;
+    sprintf(hi_from_left, "hi from left (id = %d)", player_id);
 
     if (fd_client_LHS != -1 )
-        wrap_and_send_msg(fd_client_LHS, STR, "hi!\0", 4);
+        wrap_and_send_msg(fd_client_LHS, STR, hi_from_right, 30);
     if (fd_server_RHS != -1 ) {
-        wrap_and_send_msg(fd_server_RHS, STR, "hi!\0", 4);
+        wrap_and_send_msg(fd_server_RHS, STR, hi_from_left, 30);
     }
 
+    // send ready
+    if (fd_client_LHS > 0 && fd_server_RHS > 0) {
+        wrap_and_send_msg(fd_ringmaster, READY, NULL, 0);
+    }
 }
 
 
@@ -132,6 +148,10 @@ int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t
     }
     if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
     refresh_fd_set();
+    // send ready
+    if (fd_client_LHS > 0 && fd_server_RHS > 0) {
+        wrap_and_send_msg(fd_ringmaster, READY, NULL, 0);
+    }
     return -1;
 }
 
@@ -142,6 +162,8 @@ int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf,
 
 int player_main_loop () {
     char buf[BUFFER_SIZE];    // buffer for client data
+
+    srand( (unsigned int) time (NULL) + player_id );
 
     refresh_fd_set ();
     // keep track of the biggest file descriptor
@@ -184,7 +206,7 @@ int player_main_loop () {
             }
             if (h->type == ASSIGN_ID) {
                 player_id = *((int*)buf);
-                printf("my id is %d\n", player_id);
+                printf("\tmy id is %d\n", player_id);
                 continue;
             }
             if (h->type == PLAYER_INFO && fd == fd_ringmaster) {
@@ -192,6 +214,7 @@ int player_main_loop () {
                 continue;
             }
             if (h->type == POTATO) {
+                printf("potato received! (id = %d)\n", player_id);
                 throw_potato(buf);
                 continue;
             }
@@ -212,14 +235,9 @@ int player_main_loop () {
 
 
 void register_to_ringmaster () {
-//    char send_buf[100] = "\0";
-
-//    if (send(fd_ringmaster, PORT, 10, 0) == -1)
-//        perror("send");
-
     wrap_and_send_msg (fd_ringmaster, REGISTER, PORT, sizeof(PORT));
 
-    printf("my port is %s\n", PORT);
+    printf("\tmy port is %s\n", PORT);
 }
 
 void* server_main_loop_helper (void* listener) {
@@ -252,6 +270,7 @@ int main(int argc, char** argv) {
 
     // register to the ringmaster
     register_to_ringmaster ();
+
 
     // main loop
     player_main_loop();
