@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include "message_wrapper.h"
 #define PORT "30003"
+
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
@@ -23,8 +24,10 @@ int fd_server_RHS = -1;
 
 int has_sent_ready = 0;
 
+pthread_t t;
+
 void refresh_fd_set () {
-//    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
+    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
 
@@ -39,6 +42,7 @@ void refresh_fd_set () {
         FD_SET(fd_client_LHS, &master);
     if (fd_server_RHS != -1)
         FD_SET(fd_server_RHS, &master);
+
 }
 
 
@@ -126,7 +130,7 @@ int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t
     if (fd_server_RHS == -1) {
         perror("accept");
     } else {
-        FD_SET(fd_server_RHS, master_p); // add to master set
+        FD_SET (fd_server_RHS, master_p); // add to master set
         fdmax = my_fdmax > fd_server_RHS? my_fdmax : fd_server_RHS;
         printf("player: new connection from %s on "
                "socket %d\n",
@@ -136,9 +140,15 @@ int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t
                fd_server_RHS);
     }
     if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
+
+//    pthread_join(t, NULL);
+
     refresh_fd_set();
+
+//    pthread_exit(t);
+
     send_ready ();
-    return -1;
+    return 0;
 }
 
 int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
@@ -248,7 +258,7 @@ int main(int argc, char** argv) {
     // set fd_server_RHS
     int listener_fd = server_setup (PORT);
 
-    pthread_t t;
+
     pthread_create(&t, NULL, server_main_loop_helper, (void*)& listener_fd);
 
 
@@ -262,7 +272,7 @@ int main(int argc, char** argv) {
     // main loop
     player_main_loop();
 
-//    pthread_join(t, NULL);
+
 
     client_close (fd_ringmaster);
 

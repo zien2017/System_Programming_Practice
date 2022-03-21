@@ -192,7 +192,7 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     if (h->type == READY) {
         // got ready info from a player
         ++ ready_player;
-        printf("[Debug] ready %d\n", ready_player);
+        printf("[Debug] ready fd = %d\n", fd);
         if (ready_player == num_players){
             setup_and_throw_a_potato();
         }
