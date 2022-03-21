@@ -10,7 +10,7 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 #include "message_wrapper.h"
-#define PORT "25090"
+#define PORT "25500"
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
@@ -111,24 +111,6 @@ void connect_to_adjacent_player (char* buf) {
 
 }
 
-void got_msg_from_ringmaster (int nbytes, char* buf) {
-    buf[nbytes] = '\0';
-
-    if (nbytes == sizeof(potato)) {
-        // got a potato
-        throw_potato(buf);
-        return;
-    }
-
-
-    printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
-
-}
-
-
-
-
-
 
 
 int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
@@ -162,12 +144,9 @@ int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf,
 
 int player_main_loop () {
     char buf[BUFFER_SIZE];    // buffer for client data
-    int nbytes;
 
     refresh_fd_set ();
     // keep track of the biggest file descriptor
-
-
 
     // main loop
     for(;;) {
@@ -200,7 +179,11 @@ int player_main_loop () {
                 return 1; // error exit
             }
 
-
+            if (h->type == STR) {
+                buf[h->size] = '\0';
+                printf("Received str: %s\n", buf);
+                continue;
+            }
             if (fd == fd_ringmaster && h->type == PLAYER_INFO) {
                 connect_to_adjacent_player(buf);
                 continue;
@@ -209,6 +192,7 @@ int player_main_loop () {
                 throw_potato(buf);
                 continue;
             }
+
 
             printf("ERR: player: received a unknown msg !\n");
             printf("\tmsg from fd: %d!\n", fd);
