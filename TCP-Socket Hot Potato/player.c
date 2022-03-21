@@ -10,7 +10,7 @@
 #include "socket_client.h"
 #include "socket_select_server.h"
 #include "message_wrapper.h"
-#define PORT "30003"
+#define PORT "30001"
 
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
