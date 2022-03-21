@@ -7,8 +7,13 @@
 
 struct _potato {
     int remaining_counter;
+<<<<<<< HEAD
     int player_list[513];
 } potato;
+=======
+    int player_list[128];
+};
+>>>>>>> f8b5d5d4833faf3c19ed5b0c9177e7b3c82c8ac4
 
 
 

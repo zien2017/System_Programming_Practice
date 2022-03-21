@@ -35,7 +35,7 @@ void *get_in_addr_c(struct sockaddr *sa) {
 
 
 int client_setup(char * hostname, char* port) {
-    setbuf(stdout,NULL);
+    setbuf(stdout, NULL);
 	int sockfd;
 
 	struct addrinfo hints, *servinfo, *p;

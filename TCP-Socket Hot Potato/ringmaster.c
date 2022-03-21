@@ -103,13 +103,19 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     // set info for this node
     newPlayer->fd = fd;
     newPlayer->player_id = connected_player;
-    newPlayer->player_port = atoi(buf);
+    newPlayer->player_port = *(int*)buf;
     memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
+<<<<<<< HEAD
 
 //    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
 //    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
 //    printf("\t#connected_player = %d\n", connected_player);
     ++ connected_player;
+=======
+//    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
+    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
+    printf("\t#connected_player = %d\n", connected_player);
+>>>>>>> f8b5d5d4833faf3c19ed5b0c9177e7b3c82c8ac4
 
     return newPlayer;
 }
@@ -179,6 +185,7 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
 
     // we got some data from a client
 
+<<<<<<< HEAD
     if (h->type == REGISTER && connected_player < num_players - 1 && start == 0) {
         // add new player
         assign_player_id (fd, add_one_player (fd, body_buf, h->size));
@@ -197,10 +204,22 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
         ++ ready_player;
 //        printf("[Debug] ready fd = %d\n", fd);
         if (ready_player == num_players){
+=======
+    if (h->type == REGISTER) {
+        if (connected_player < num_players) {
+            // add new player
+            assign_player_id (fd, add_one_player (fd, body_buf, h->size));
+        }
+        if (connected_player == num_players && begin == 0) {
+            // start the game
+            initialize_a_ring (listener, fdmax, master_p);
+            sleep(1);
+>>>>>>> f8b5d5d4833faf3c19ed5b0c9177e7b3c82c8ac4
             setup_and_throw_a_potato();
         }
         return 0;
     }
+
     if (h->type == POTATO) {
         // ending
         print_trace((struct _potato*)body_buf);
@@ -208,7 +227,8 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     }
 
     printf("ERR: ringmaster: received a unknown msg!\n");
-
+    printf("\ttype(%s)\n", (char*)h->type);
+    printf("\tsize(%d)\n", h->size);
     return 0;
 
 }
@@ -240,7 +260,7 @@ int main(int argc, char** argv) {
     srand( (unsigned int) time (NULL) + num_players );
 
 
-    int listener_fd = server_setup (argv[1]);
+    int listener_fd = server_setup (argv[1], NULL);
 
     server_main_loop(listener_fd);
 
