@@ -100,9 +100,9 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     // set info for this node
     newPlayer->fd = fd;
     newPlayer->player_id = connected_player;
-    newPlayer->player_port = atoi(buf);
+    newPlayer->player_port = *(int*)buf;
     memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
-    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
+//    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
     printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
     printf("\t#connected_player = %d\n", connected_player);
 
@@ -165,18 +165,20 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
 
     // we got some data from a client
 
-    if (h->type == REGISTER && connected_player < num_players) {
-        // add new player
-        assign_player_id (fd, add_one_player (fd, body_buf, h->size));
-    }
-
-    if (h->type == REGISTER && connected_player == num_players && begin == 0) {
-        // start the game
-        initialize_a_ring (listener, fdmax, master_p);
-        sleep(1);
-        setup_and_throw_a_potato();
+    if (h->type == REGISTER) {
+        if (connected_player < num_players) {
+            // add new player
+            assign_player_id (fd, add_one_player (fd, body_buf, h->size));
+        }
+        if (connected_player == num_players && begin == 0) {
+            // start the game
+            initialize_a_ring (listener, fdmax, master_p);
+            sleep(1);
+            setup_and_throw_a_potato();
+        }
         return 0;
     }
+
     if (h->type == POTATO) {
         // ending
         printf("this is the end of the game\n");
@@ -185,7 +187,8 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     }
 
     printf("ERR: ringmaster: received a unknown msg!\n");
-
+    printf("\ttype(%s)\n", (char*)h->type);
+    printf("\tsize(%d)\n", h->size);
     return 0;
 
 }
@@ -215,7 +218,7 @@ int main(int argc, char** argv) {
     input_parser (argc, argv);
 
 
-    int listener_fd = server_setup (argv[1]);
+    int listener_fd = server_setup (argv[1], NULL);
 
     server_main_loop(listener_fd);
 

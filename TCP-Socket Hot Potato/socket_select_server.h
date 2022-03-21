@@ -85,8 +85,8 @@ int server_main_loop (int listener) {
 
 }
 
-
-int server_setup(char* port) {
+// if port == 0, it would generate a new port and rewrite to char* port
+int server_setup(char* port, int* new_port) {
 
     int listener;     // listening socket descriptor
 
@@ -95,6 +95,9 @@ int server_setup(char* port) {
 
 	struct addrinfo hints, *ai, *p;
 
+    if (port == NULL) {
+        port = "0";
+    }
 
 	// get us a socket and bind it
 	memset(&hints, 0, sizeof hints);
@@ -122,13 +125,13 @@ int server_setup(char* port) {
 			continue;
 		}
 
-        // get random port
-
-//        struct sockaddr_in addr;
-//        int size=sizeof(addr);
-//        getsockname(listener, (void*) &addr, (socklen_t *) & size);
-//        printf("new port is %d", addr.sin_port);
-
+        if (new_port != NULL) {
+            // get random port and rewrite back to char* port
+            struct sockaddr_in addr;
+            int size=sizeof(addr);
+            getsockname(listener, (void*) &addr, (socklen_t *) & size);
+            *new_port = addr.sin_port;
+        }
         break;
 	}
 
