@@ -10,18 +10,12 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 #include "message_wrapper.h"
-#define PORT "25500"
+#define PORT "22389"
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
 int fdmax = 10;
-
-struct playerInfo {
-    char player_addr[INET6_ADDRSTRLEN];
-    int player_port;
-    int player_fd;
-    struct playerInfo * next;
-} ;
+int player_id = -1;
 
 int fd_ringmaster = -1;
 int fd_client_LHS = -1;
@@ -30,7 +24,7 @@ int fd_server_RHS = -1;
 
 void refresh_fd_set () {
 
-    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
+//    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
 
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
@@ -76,6 +70,10 @@ void input_checker (int argc, char** argv) {
 void throw_potato(char* buf ){
     // received a potato
     struct _potato * p = (struct _potato *) buf;
+    // add my name on potato
+    p->player_list[p->remaining_counter] = player_id;
+
+    // throw potato
     if (p->remaining_counter == 0) {
         // ending give potato back to the ringmaster
         wrap_and_send_msg(fd_ringmaster, POTATO, p, sizeof (struct _potato));
@@ -184,7 +182,12 @@ int player_main_loop () {
                 printf("Received str: %s\n", buf);
                 continue;
             }
-            if (fd == fd_ringmaster && h->type == PLAYER_INFO) {
+            if (h->type == ASSIGN_ID) {
+                player_id = *((int*)buf);
+                printf("my id is %d\n", player_id);
+                continue;
+            }
+            if (h->type == PLAYER_INFO && fd == fd_ringmaster) {
                 connect_to_adjacent_player(buf);
                 continue;
             }
@@ -205,6 +208,7 @@ int player_main_loop () {
 
     return 0;
 }
+
 
 
 void register_to_ringmaster () {

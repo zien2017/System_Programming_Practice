@@ -22,6 +22,14 @@ struct msg_header {
     enum msg_type type;
 };
 
+struct playerInfo {
+    char player_addr[INET6_ADDRSTRLEN];
+    int player_port;
+    int player_id;
+    int fd;
+    struct playerInfo * next;
+} ;
+
 void wrap_and_send_msg (int fd, enum msg_type type, void* msg_body, int size) {
     char temp_buf[sizeof (struct msg_header) + size];
 

@@ -10,22 +10,14 @@
 #include "message_wrapper.h"
 
 
-
 int port_num, num_players, num_hops;
-
-struct playerInfo {
-    char player_addr[INET6_ADDRSTRLEN];
-    int player_port;
-    int player_fd;
-    struct playerInfo * next;
-} PlayerInfoNode;;
 
 struct playerInfo * playerInfo_dummy_head = NULL;
 char player_addrs[255][INET6_ADDRSTRLEN];
 char player_ports[255][5];
 char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
 
-struct _potato * my_potato = NULL;
+//struct _potato * my_potato = NULL;
 
 int connected_player = 0;
 int begin = 0;
@@ -93,7 +85,11 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
     return fdmax;
 }
 
-void add_one_player (int fd, char* buf, int nbytes) {
+void assign_player_id (int fd, struct playerInfo * player_info) {
+    wrap_and_send_msg(fd, ASSIGN_ID, &player_info->player_id, sizeof (int));
+}
+
+struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     // add a player
     ++ connected_player;
     struct playerInfo * newPlayer = malloc (sizeof (struct playerInfo));
@@ -101,15 +97,16 @@ void add_one_player (int fd, char* buf, int nbytes) {
     newPlayer->next = playerInfo_dummy_head->next;
     playerInfo_dummy_head->next = newPlayer;
 
-
     // set info for this node
-    newPlayer->player_fd = fd;
+    newPlayer->fd = fd;
+    newPlayer->player_id = connected_player;
     newPlayer->player_port = atoi(buf);
     memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
     printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
     printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
     printf("\t#connected_player = %d\n", connected_player);
 
+    return newPlayer;
 }
 
 void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
@@ -124,29 +121,30 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
             }
             // find the p info
             struct playerInfo * temp_p = playerInfo_dummy_head->next;
-            while (temp_p->player_fd != j) {
+            while (temp_p->fd != j) {
                 temp_p = temp_p->next;
             }
             if (temp_p->next == NULL) {
                 temp_p = playerInfo_dummy_head;
             }
             // send the player info next to him
-            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->player_fd);
+            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->fd);
             wrap_and_send_msg(j, PLAYER_INFO, temp_p->next, sizeof (struct playerInfo));
         }
     }
 }
 
-void throw_a_potato () {
-    my_potato = malloc (sizeof (struct _potato));
+void setup_and_throw_a_potato () {
+    struct _potato* my_potato = malloc (sizeof (struct _potato));
     memset(my_potato, 0, sizeof (struct _potato));
     my_potato->remaining_counter = num_hops;
-    wrap_and_send_msg(playerInfo_dummy_head->next->player_fd, POTATO, my_potato, sizeof (struct _potato));
+    wrap_and_send_msg(playerInfo_dummy_head->next->fd, POTATO, my_potato, sizeof (struct _potato));
+}
 
-//    if (send(playerInfo_dummy_head->next->player_fd, my_potato, sizeof (struct _potato), 0) == -1) {
-//        perror("ERR: send\n");
-//    }
-//    printf("sent a potato\n");
+void print_trace(struct _potato* my_potato) {
+    for (int i = num_hops; i > 0; -- i) {
+        printf("player %d got potato\n", my_potato->player_list[i]);
+    }
 }
 
 int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p) {
@@ -169,20 +167,20 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
 
     if (h->type == REGISTER && connected_player < num_players) {
         // add new player
-        add_one_player (fd, body_buf, h->size) ;
+        assign_player_id (fd, add_one_player (fd, body_buf, h->size));
     }
 
     if (h->type == REGISTER && connected_player == num_players && begin == 0) {
         // start the game
         initialize_a_ring (listener, fdmax, master_p);
         sleep(1);
-        throw_a_potato ();
+        setup_and_throw_a_potato();
         return 0;
     }
     if (h->type == POTATO) {
         // ending
         printf("this is the end of the game\n");
-
+        print_trace((struct _potato*)body_buf);
         return 1;
     }
 
@@ -199,7 +197,6 @@ void free_up_playInfo (struct playerInfo * curr) {
 }
 
 void free_up_space () {
-    free(my_potato);
     free_up_playInfo (playerInfo_dummy_head);
 }
 
@@ -208,7 +205,7 @@ int main(int argc, char** argv) {
     // init
     playerInfo_dummy_head = malloc(sizeof *playerInfo_dummy_head);
     playerInfo_dummy_head->next = NULL;
-    playerInfo_dummy_head->player_fd = 256;
+    playerInfo_dummy_head->fd = 256;
 
     memset(player_addrs, 0, sizeof player_addrs);
     memset(player_ports, 0, sizeof player_ports);

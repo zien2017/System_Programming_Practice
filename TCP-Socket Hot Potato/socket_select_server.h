@@ -35,12 +35,12 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
 
 int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p);
 
+
 int server_main_loop (int listener) {
 
     struct sockaddr_storage remoteaddr; // client address
 
     char buf[BUFFER_SIZE];    // buffer for client data
-//    int nbytes;
 
     char remoteIP[INET6_ADDRSTRLEN];
 
