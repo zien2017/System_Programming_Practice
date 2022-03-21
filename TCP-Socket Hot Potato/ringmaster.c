@@ -8,7 +8,6 @@
 #include "potato.h"
 #include "socket_select_server.h"
 #include "message_wrapper.h"
-#define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 
 
@@ -133,9 +132,7 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
             }
             // send the player info next to him
             printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->player_fd);
-            if (send(j, temp_p->next, sizeof(struct playerInfo), 0) == -1) {
-                perror("ERR: send");
-            }
+            wrap_and_send_msg(j, PLAYER_INFO, temp_p->next, sizeof (struct playerInfo));
         }
     }
 }
@@ -144,59 +141,52 @@ void throw_a_potato () {
     my_potato = malloc (sizeof (struct _potato));
     memset(my_potato, 0, sizeof (struct _potato));
     my_potato->remaining_counter = num_hops;
-    if (send(playerInfo_dummy_head->next->player_fd, my_potato, sizeof (struct _potato), 0) == -1) {
-        perror("ERR: send\n");
-    }
+    wrap_and_send_msg(playerInfo_dummy_head->next->player_fd, POTATO, my_potato, sizeof (struct _potato));
+
+//    if (send(playerInfo_dummy_head->next->player_fd, my_potato, sizeof (struct _potato), 0) == -1) {
+//        perror("ERR: send\n");
+//    }
 //    printf("sent a potato\n");
 }
 
-int server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
-//    if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
+//    if ((nbytes = recv(fd, body_buf, sizeof_buf, 0)) <= 0) {
     // header buffer
     char header_buf[sizeof(struct msg_header)];
-    struct msg_header* header_p = (struct msg_header *) header_buf;
+    struct msg_header* h = (struct msg_header *) header_buf;
 
-    if (recv_and_unwrap_msg(fd, buf, header_p) != 0) {
+    if (recv_and_unwrap_msg(fd, body_buf, h) == -1) {
         // got error or connection closed by client
-        if (nbytes == 0) {
-            // connection closed
-            printf("ringmaster: socket %d hung up\n", fd);
-        } else {
-            perror("recv");
-        }
+        // connection closed
+        printf("ringmaster: socket %d hung up\n", fd);
         close(fd); // bye!
         FD_CLR(fd, master_p); // remove from master set
         return 1; // error exit
     }
-    char temp_type[10];
-    if (header_p->type == REGISTER) {
-        strcpy(temp_type, "register");
-    }
-    printf("msg type: %s, size: %d\n", temp_type, header_p->size);
 
     // we got some data from a client
 
-    if (connected_player < num_players) {
+    if (h->type == REGISTER && connected_player < num_players) {
         // add new player
-        add_one_player (fd, buf, nbytes) ;
+        add_one_player (fd, body_buf, h->size) ;
     }
 
-    if (connected_player == num_players &&  begin == 0) {
+    if (h->type == REGISTER && connected_player == num_players && begin == 0) {
         // start the game
         initialize_a_ring (listener, fdmax, master_p);
         sleep(1);
         throw_a_potato ();
         return 0;
     }
-    if (nbytes == sizeof(struct _potato)) {
+    if (h->type == POTATO) {
         // ending
         printf("this is the end of the game\n");
 
-
         return 1;
     }
-    printf("server recieved a unknow msg\n");
+
+    printf("ERR: ringmaster: received a unknown msg!\n");
 
     return 0;
 

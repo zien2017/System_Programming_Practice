@@ -33,14 +33,14 @@ void *get_in_addr(struct sockaddr *sa)
 
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) ;
 
-int server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p);
+int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p);
 
 int server_main_loop (int listener) {
 
     struct sockaddr_storage remoteaddr; // client address
 
     char buf[BUFFER_SIZE];    // buffer for client data
-    int nbytes;
+//    int nbytes;
 
     char remoteIP[INET6_ADDRSTRLEN];
 
@@ -76,7 +76,7 @@ int server_main_loop (int listener) {
                     fdmax = server_new_connection (listener, fdmax, remoteIP, &addrlen, &remoteaddr, &master) ;
                     if (fdmax == -1) return 0; // escape function
                 } else {
-                    if (server_recv_data (i, nbytes, fdmax, listener, buf, sizeof buf, &master) )
+                    if (server_recv_data (i, fdmax, listener, buf, sizeof buf, &master) )
                         return 0;
                 } // END handle data from client
             } // END got new incoming connection

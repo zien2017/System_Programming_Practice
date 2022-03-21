@@ -10,7 +10,7 @@
 #include "socket_select_server.h"
 #include <pthread.h>
 #include "message_wrapper.h"
-#define PORT "25449"
+#define PORT "25090"
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
@@ -77,50 +77,43 @@ void throw_potato(char* buf ){
     // received a potato
     struct _potato * p = (struct _potato *) buf;
     if (p->remaining_counter == 0) {
-        // ending give back to ringmaster
-        if (send(fd_ringmaster, p, sizeof (struct _potato), 0) == -1)
-            perror("player send potato : ");
+        // ending give potato back to the ringmaster
+        wrap_and_send_msg(fd_ringmaster, POTATO, p, sizeof (struct _potato));
     } else {
         -- p->remaining_counter;
         // next hop give back to ringmaster
 
-        printf("received a potato (%d)\n", p->remaining_counter);
-
-        if (send(fd_server_RHS, p, sizeof (struct _potato), 0) == -1)
-            perror("player send potato : ");
+        wrap_and_send_msg(fd_server_RHS, POTATO, p, sizeof (struct _potato));
     }
+}
+
+void connect_to_adjacent_player (char* buf) {
+    // assigned to set up a ring
+    struct playerInfo* p_info = (struct playerInfo*) buf;
+
+    char port_str[6];
+    sprintf(port_str, "%d", p_info->player_port);
+
+    printf("received player info from master'\n");
+    printf("\taddr %s\n", p_info->player_addr);
+    printf("\tport %s\n", port_str);
+
+    // set fd_client_LHS
+    fd_client_LHS = client_setup (p_info->player_addr, port_str);
+    refresh_fd_set();
+
+
+    if (fd_client_LHS != -1 )
+        wrap_and_send_msg(fd_client_LHS, STR, "hi!\0", 4);
+    if (fd_server_RHS != -1 ) {
+        wrap_and_send_msg(fd_server_RHS, STR, "hi!\0", 4);
+    }
+
 }
 
 void got_msg_from_ringmaster (int nbytes, char* buf) {
     buf[nbytes] = '\0';
 
-    if (nbytes == sizeof(struct playerInfo)) {
-        // assigned to set up a ring
-        struct playerInfo* p_info = (struct playerInfo*) buf;
-
-        char port_str[6];
-        sprintf(port_str, "%d", p_info->player_port);
-
-        printf("received player info from master'\n");
-        printf("\taddr %s\n", p_info->player_addr);
-        printf("\tport %s\n", port_str);
-
-        // set fd_client_LHS
-        fd_client_LHS = client_setup (p_info->player_addr, port_str);
-        refresh_fd_set();
-
-
-        if (fd_client_LHS != -1 )
-            if (send(fd_client_LHS, "hi from right", 10, 0) == -1)
-                perror("player send msg to left ");
-        if (fd_server_RHS != -1 )
-            if (send(fd_server_RHS, "hi from left", 10, 0) == -1)
-                perror("player send msg to right ");
-
-
-
-        return;
-    }
     if (nbytes == sizeof(potato)) {
         // got a potato
         throw_potato(buf);
@@ -133,16 +126,8 @@ void got_msg_from_ringmaster (int nbytes, char* buf) {
 }
 
 
-void got_msg_from_one_end (int nbytes, char* buf) {
 
-    if (nbytes == sizeof (struct _potato)) {
-        throw_potato(buf);
-        return;
-    }
 
-    printf  ("player: received (length = %d) '%s'\n", nbytes, buf);
-
-}
 
 
 
@@ -170,7 +155,7 @@ int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t
     return -1;
 }
 
-int server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
+int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     printf("ERR: No data should be received here!\n");
     return 0;
 }
@@ -204,50 +189,30 @@ int player_main_loop () {
             }
             // header buffer
             char header_buf[sizeof(struct msg_header)];
-            struct msg_header* header_p = (struct msg_header *) header_buf;
+            struct msg_header* h = (struct msg_header *) header_buf;
 
-            if (recv_and_unwrap_msg(fd, buf, header_p) != 0) {
+            if (recv_and_unwrap_msg(fd, buf, h) == -1) {
                 // got error or connection closed by client
-                if (nbytes == 0) {
-                    // connection closed
-                    printf("ringmaster: socket %d hung up\n", fd);
-                } else {
-                    perror("recv");
-                }
+                // connection closed
+                printf("ringmaster: socket %d hung up\n", fd);
                 close(fd); // bye!
                 FD_CLR(fd, &master); // remove from master set
                 return 1; // error exit
             }
 
-            printf("msg type: %s, size: %d\n", (char*)&header_p->type, header_p->size);
-//            if ((nbytes = recv(fd, buf, sizeof buf, 0)) <= 0) {
-//                // got error or connection closed by client
-//                if (nbytes == 0) {
-//                    // connection closed
-//                    printf("player: socket %d hung up\n", fd);
-//
-//                } else {
-//                    perror("recv");
-//                }
-//                close(fd); // bye!
-//                FD_CLR(fd, &master); // remove from master set
-//                return 1; // ending
-//            }
-            if (fd == fd_ringmaster) {
-                got_msg_from_ringmaster(nbytes, buf);
+
+            if (fd == fd_ringmaster && h->type == PLAYER_INFO) {
+                connect_to_adjacent_player(buf);
                 continue;
             }
-            if (fd == fd_client_LHS) {
-                got_msg_from_one_end(nbytes, buf);
-                continue;
-            }
-            if (fd == fd_server_RHS) {
-                got_msg_from_one_end(nbytes, buf);
+            if (h->type == POTATO) {
+                throw_potato(buf);
                 continue;
             }
 
-            printf("ERR: No data should be received here!\n");
-            printf("ERR: Got msg from un-know fd: %d!\n", fd);
+            printf("ERR: player: received a unknown msg !\n");
+            printf("\tmsg from fd: %d!\n", fd);
+            printf("\tmsg type: %s, size: %d\n", (char*)&h->type, h->size);
 
             // END handle data from client
 

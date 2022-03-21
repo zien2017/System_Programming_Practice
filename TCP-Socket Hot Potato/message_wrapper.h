@@ -53,8 +53,13 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
     }
     memcpy(header, temp_buf, sizeof (struct msg_header));
     memcpy(msg_body, temp_buf + sizeof (struct msg_header), header->size);
+    if (total_size - sizeof (struct msg_header) != header->size) {
+        printf("wrapper: incomplete msg received! from %d \n", fd);
+        close(fd);
+        return -1;
+    }
 
-    return 0;
+    return header->size;
 }
 
 #endif //TCP_SOCKET_HOT_POTATO_MESSAGE_WRAPPER_H
