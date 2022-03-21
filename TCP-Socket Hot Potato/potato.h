@@ -7,7 +7,7 @@
 
 struct _potato {
     int remaining_counter;
-    int player_list[128];
+    int player_list[513];
 } potato;
 
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "potato.h"
 #include "socket_select_server.h"
 #include "message_wrapper.h"
@@ -46,14 +47,11 @@ void input_parser (int argc, char** argv) {
         printf("ERR: num_hops error: %d\n", num_hops);
         exit(1);
     }
-    printf("this is a ringmaster with\n");
-    printf("\tport_num is %d\n", port_num);
-    printf("\tnum_players is %d\n", num_players);
-    printf("\tnum_hops is %d\n", num_hops);
+    printf("Potato Ringmaster\n");
+    printf("\tPlayers = %d\n", num_players);
+    printf("\tHops = %d\n", num_hops);
 
 }
-
-// malloc a new potato
 
 
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
@@ -71,12 +69,12 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         if (newfd > fdmax) {    // keep track of the max
             fdmax = newfd;
         }
-        printf("ringmaster: new connection from %s on "
-               "socket %d\n",
-               inet_ntop(remoteaddr_p->ss_family,
-                         get_in_addr((struct sockaddr *) remoteaddr_p),
-                         remoteIP, INET6_ADDRSTRLEN),
-               newfd);
+//        printf("ringmaster: new connection from %s on "
+//               "socket %d\n",
+//               inet_ntop(remoteaddr_p->ss_family,
+//                         get_in_addr((struct sockaddr *) remoteaddr_p),
+//                         remoteIP, INET6_ADDRSTRLEN),
+//               newfd);
 
         // save the new connection ip
         memcpy(player_fd_to_addr_mapping[newfd], remoteIP, *addrlen_p);
@@ -87,12 +85,13 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
 }
 
 void assign_player_id (int fd, struct playerInfo * player_info) {
+    printf("Player %d is ready to play\n", player_info->player_id);
     wrap_and_send_msg(fd, ASSIGN_ID, &player_info->player_id, sizeof (int));
 }
 
 struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     // add a player
-    ++ connected_player;
+
     struct playerInfo * newPlayer = malloc (sizeof (struct playerInfo));
     // add new player info to the header
     newPlayer->next = playerInfo_dummy_head->next;
@@ -103,9 +102,11 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     newPlayer->player_id = connected_player;
     newPlayer->player_port = atoi(buf);
     memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
-    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
-    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
-    printf("\t#connected_player = %d\n", connected_player);
+
+//    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
+//    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
+//    printf("\t#connected_player = %d\n", connected_player);
+    ++ connected_player;
 
     return newPlayer;
 }
@@ -113,7 +114,7 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
 void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
     // create a ring by sending neighbor addresses to players
     start = 1;
-    printf("creating rings ... \n");
+//    printf("creating rings ... \n");
     for(int j = 0; j <= fdmax; j++) {
         if (FD_ISSET(j, master_p)) {
             // except the listener
@@ -129,7 +130,7 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
                 temp_p = playerInfo_dummy_head;
             }
             // send the player info next to him
-            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->fd);
+//            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->fd);
             wrap_and_send_msg(j, PLAYER_INFO, temp_p->next, sizeof (struct playerInfo));
         }
     }
@@ -139,13 +140,22 @@ void setup_and_throw_a_potato () {
     struct _potato* my_potato = malloc (sizeof (struct _potato));
     memset(my_potato, 0, sizeof (struct _potato));
     my_potato->remaining_counter = num_hops;
-    wrap_and_send_msg(playerInfo_dummy_head->next->fd, POTATO, my_potato, sizeof (struct _potato));
+    int random = rand() % num_players;
+    struct playerInfo * player = playerInfo_dummy_head->next;
+    for (int i = 0; i < random; ++ i) {
+        player = player->next;
+    }
+    printf("Ready to start the game, sending potato to player %d\n", player->player_id);
+    wrap_and_send_msg(player->fd, POTATO, my_potato, sizeof (struct _potato));
 }
 
 void print_trace(struct _potato* my_potato) {
-    for (int i = num_hops; i > 0; -- i) {
-        printf("player %d got potato\n", my_potato->player_list[i]);
+    printf("Trace of potato:\n");
+    printf("%d", my_potato->player_list[num_hops]);
+    for (int i = num_hops - 1; i > 0; -- i) {
+        printf(",%d", my_potato->player_list[i]);
     }
+    printf("\n");
 }
 
 int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p) {
@@ -182,7 +192,7 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     if (h->type == READY) {
         // got ready info from a player
         ++ ready_player;
-        printf("player with fd = %d ready\n", fd);
+        printf("[Debug] ready %d\n", ready_player);
         if (ready_player == num_players){
             setup_and_throw_a_potato();
         }
@@ -190,7 +200,6 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     }
     if (h->type == POTATO) {
         // ending
-        printf("this is the end of the game\n");
         print_trace((struct _potato*)body_buf);
         return 1; // escape the forever loop
     }
@@ -224,6 +233,8 @@ int main(int argc, char** argv) {
 
 
     input_parser (argc, argv);
+
+    srand( (unsigned int) time (NULL) + num_players );
 
 
     int listener_fd = server_setup (argv[1]);

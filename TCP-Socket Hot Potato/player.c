@@ -21,15 +21,12 @@ int fd_ringmaster = -1;
 int fd_client_LHS = -1;
 int fd_server_RHS = -1;
 
-
+int has_sent_ready = 0;
 
 void refresh_fd_set () {
-
 //    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
-
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
-
 
     // add the fds to the master set
     fdmax = fdmax > fd_ringmaster ? fdmax : fd_ringmaster;
@@ -67,6 +64,13 @@ void input_checker (int argc, char** argv) {
 
 }
 
+// send ready when all connection from left and right are connected
+void send_ready () {
+    if (has_sent_ready == 0 && fd_client_LHS > 0 && fd_server_RHS > 0) {
+        wrap_and_send_msg(fd_ringmaster, READY, NULL, 0);
+        has_sent_ready = 1;
+    }
+}
 
 void throw_potato(char* buf ){
     // received a potato
@@ -107,22 +111,7 @@ void connect_to_adjacent_player (char* buf) {
     fd_client_LHS = client_setup (p_info->player_addr, port_str);
     refresh_fd_set();
 
-    char hi_from_right [30] ;
-    sprintf(hi_from_right, "hi from right (id = %d)", player_id);
-
-    char hi_from_left [30] ;
-    sprintf(hi_from_left, "hi from left (id = %d)", player_id);
-
-    if (fd_client_LHS != -1 )
-        wrap_and_send_msg(fd_client_LHS, STR, hi_from_right, 30);
-    if (fd_server_RHS != -1 ) {
-        wrap_and_send_msg(fd_server_RHS, STR, hi_from_left, 30);
-    }
-
-    // send ready
-    if (fd_client_LHS > 0 && fd_server_RHS > 0) {
-        wrap_and_send_msg(fd_ringmaster, READY, NULL, 0);
-    }
+    send_ready();
 }
 
 
@@ -148,10 +137,7 @@ int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t
     }
     if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
     refresh_fd_set();
-    // send ready
-    if (fd_client_LHS > 0 && fd_server_RHS > 0) {
-        wrap_and_send_msg(fd_ringmaster, READY, NULL, 0);
-    }
+    send_ready ();
     return -1;
 }
 
@@ -163,7 +149,6 @@ int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf,
 int player_main_loop () {
     char buf[BUFFER_SIZE];    // buffer for client data
 
-    srand( (unsigned int) time (NULL) + player_id );
 
     refresh_fd_set ();
     // keep track of the biggest file descriptor
@@ -256,6 +241,8 @@ int main(int argc, char** argv) {
 
 
     input_checker(argc, argv);
+
+    srand( (unsigned int) time (NULL) + player_id );
 
 
     // set fd_server_RHS
