@@ -18,24 +18,28 @@ fd_set master, read_fds;
 int fdmax = 10;
 int player_id = -1;
 
+int listener_fd;
 int fd_ringmaster = -1;
 int fd_client_LHS = -1;
 int fd_server_RHS = -1;
 
 int has_sent_ready = 0;
 
-pthread_t t;
+//pthread_t t;
 
 void refresh_fd_set () {
-    printf("refreshing fd: %d %d %d\n", fd_ringmaster, fd_client_LHS, fd_server_RHS);
+    printf("refreshing fd: %d %d %d %d\n", listener_fd, fd_ringmaster, fd_client_LHS, fd_server_RHS);
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
 
     // add the fds to the master set
+    fdmax = fdmax > listener_fd ? fdmax : listener_fd;
     fdmax = fdmax > fd_ringmaster ? fdmax : fd_ringmaster;
     fdmax = fdmax > fd_client_LHS ? fdmax : fd_client_LHS;
     fdmax = fdmax > fd_server_RHS ? fdmax : fd_server_RHS;
 
+    if (listener_fd > 0)
+        FD_SET(listener_fd, &master);
     if (fd_ringmaster != -1)
         FD_SET(fd_ringmaster, &master);
     if (fd_client_LHS != -1)
@@ -121,39 +125,49 @@ void connect_to_adjacent_player (char* buf) {
 
 
 int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
-    *addrlen_p = sizeof (*remoteaddr_p);
 
-    fd_server_RHS = accept(listener, // newly accept()ed socket descriptor
-                       (struct sockaddr *)remoteaddr_p,
-                       addrlen_p);
-    // handle new connections
-    if (fd_server_RHS == -1) {
-        perror("accept");
-    } else {
-        FD_SET (fd_server_RHS, master_p); // add to master set
-        fdmax = my_fdmax > fd_server_RHS? my_fdmax : fd_server_RHS;
-        printf("player: new connection from %s on "
-               "socket %d\n",
-               inet_ntop(remoteaddr_p->ss_family,
-                         get_in_addr((struct sockaddr *) remoteaddr_p),
-                         remoteIP, INET6_ADDRSTRLEN),
-               fd_server_RHS);
-    }
-    if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
-
-//    pthread_join(t, NULL);
-
-    refresh_fd_set();
-
-//    pthread_exit(t);
-
-    send_ready ();
     return 0;
 }
 
 int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     printf("ERR: No data should be received here!\n");
     return 0;
+}
+
+void add_new_conn () {
+    struct sockaddr_storage remoteaddr; // client address
+
+    char buf[BUFFER_SIZE];    // buffer for client data
+
+    char remoteIP[INET6_ADDRSTRLEN];
+
+    fd_set master;    // master file descriptor list
+    fd_set read_fds;  // temp file descriptor list for select()
+    int fdmax;        // maximum file descriptor number
+    socklen_t addrlen;
+
+    fd_server_RHS = accept(listener_fd, // newly accept()ed socket descriptor
+                           (struct sockaddr *)&remoteaddr,
+                           &addrlen);
+    // handle new connections
+    if (fd_server_RHS == -1) {
+        perror("accept");
+    } else {
+        FD_SET (fd_server_RHS, &master); // add to master set
+        fdmax = fdmax > fd_server_RHS? fdmax : fd_server_RHS;
+        printf("player: new connection from %s on "
+               "socket %d\n",
+               inet_ntop((&remoteaddr)->ss_family,
+                         get_in_addr((struct sockaddr *) &remoteaddr),
+                         remoteIP, INET6_ADDRSTRLEN),
+               fd_server_RHS);
+    }
+
+    if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
+
+    refresh_fd_set();
+
+    send_ready ();
 }
 
 int player_main_loop () {
@@ -181,6 +195,12 @@ int player_main_loop () {
             if ( ! FD_ISSET(fd, &read_fds)) {
                 continue;
             }
+
+            if (fd == listener_fd) {
+                add_new_conn();
+                continue;
+            }
+
             // header buffer
             char header_buf[sizeof(struct msg_header)];
             struct msg_header* h = (struct msg_header *) header_buf;
@@ -235,10 +255,10 @@ void register_to_ringmaster () {
     printf("\tmy port is %s\n", PORT);
 }
 
-void* server_main_loop_helper (void* listener) {
-    server_main_loop(*(int*) listener);
-    pthread_exit(NULL);
-}
+//void* server_main_loop_helper (void* listener) {
+//    server_main_loop(*(int*) listener);
+////    pthread_exit(NULL);
+//}
 
 /*
  * Arguments usage: player <machine_name> <port_num>
@@ -256,10 +276,10 @@ int main(int argc, char** argv) {
 
 
     // set fd_server_RHS
-    int listener_fd = server_setup (PORT);
+    listener_fd = server_setup (PORT);
 
 
-    pthread_create(&t, NULL, server_main_loop_helper, (void*)& listener_fd);
+//    pthread_create(&t, NULL, server_main_loop_helper, (void*)& listener_fd);
 
 
     // set client fd from ringmaster
@@ -271,7 +291,6 @@ int main(int argc, char** argv) {
 
     // main loop
     player_main_loop();
-
 
 
     client_close (fd_ringmaster);
