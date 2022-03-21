@@ -15,6 +15,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include "potato.h"
+#include "message_wrapper.h"
+#define BUFFER_SIZE sizeof (struct _potato) + sizeof (struct msg_header)
 
 //#define PORT "9034"   // port we're listening on
 
@@ -36,7 +39,7 @@ int server_main_loop (int listener) {
 
     struct sockaddr_storage remoteaddr; // client address
 
-    char buf[sizeof potato];    // buffer for client data
+    char buf[BUFFER_SIZE];    // buffer for client data
     int nbytes;
 
     char remoteIP[INET6_ADDRSTRLEN];

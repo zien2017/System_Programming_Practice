@@ -9,9 +9,9 @@
 #include "socket_client.h"
 #include "socket_select_server.h"
 #include <pthread.h>
-
-#define PORT "25299"
-
+#include "message_wrapper.h"
+#define PORT "25449"
+#define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
 fd_set master, read_fds;
 int fdmax = 10;
@@ -176,7 +176,7 @@ int server_recv_data (int i, int nbytes, int fdmax, int listener, char* buf, int
 }
 
 int player_main_loop () {
-    char buf[sizeof potato];    // buffer for client data
+    char buf[BUFFER_SIZE];    // buffer for client data
     int nbytes;
 
     refresh_fd_set ();
@@ -197,39 +197,57 @@ int player_main_loop () {
         }
 
         // run through the existing connections looking for data to read
-        for(int i = 0; i <= fdmax; i++) {
+        for(int fd = 0; fd <= fdmax; fd++) {
             // we got one!!
-            if ( ! FD_ISSET(i, &read_fds)) {
+            if ( ! FD_ISSET(fd, &read_fds)) {
                 continue;
             }
-            if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
+            // header buffer
+            char header_buf[sizeof(struct msg_header)];
+            struct msg_header* header_p = (struct msg_header *) header_buf;
+
+            if (recv_and_unwrap_msg(fd, buf, header_p) != 0) {
                 // got error or connection closed by client
                 if (nbytes == 0) {
                     // connection closed
-                    printf("player: socket %d hung up\n", i);
-
+                    printf("ringmaster: socket %d hung up\n", fd);
                 } else {
                     perror("recv");
                 }
-                close(i); // bye!
-                FD_CLR(i, &master); // remove from master set
-                return 1; // ending
+                close(fd); // bye!
+                FD_CLR(fd, &master); // remove from master set
+                return 1; // error exit
             }
-            if (i == fd_ringmaster) {
+
+            printf("msg type: %s, size: %d\n", (char*)&header_p->type, header_p->size);
+//            if ((nbytes = recv(fd, buf, sizeof buf, 0)) <= 0) {
+//                // got error or connection closed by client
+//                if (nbytes == 0) {
+//                    // connection closed
+//                    printf("player: socket %d hung up\n", fd);
+//
+//                } else {
+//                    perror("recv");
+//                }
+//                close(fd); // bye!
+//                FD_CLR(fd, &master); // remove from master set
+//                return 1; // ending
+//            }
+            if (fd == fd_ringmaster) {
                 got_msg_from_ringmaster(nbytes, buf);
                 continue;
             }
-            if (i == fd_client_LHS) {
+            if (fd == fd_client_LHS) {
                 got_msg_from_one_end(nbytes, buf);
                 continue;
             }
-            if (i == fd_server_RHS) {
+            if (fd == fd_server_RHS) {
                 got_msg_from_one_end(nbytes, buf);
                 continue;
             }
 
             printf("ERR: No data should be received here!\n");
-            printf("ERR: Got msg from un-know fd: %d!\n", i);
+            printf("ERR: Got msg from un-know fd: %d!\n", fd);
 
             // END handle data from client
 
@@ -243,8 +261,10 @@ int player_main_loop () {
 void register_to_ringmaster () {
 //    char send_buf[100] = "\0";
 
-    if (send(fd_ringmaster, PORT, 10, 0) == -1)
-        perror("send");
+//    if (send(fd_ringmaster, PORT, 10, 0) == -1)
+//        perror("send");
+
+    wrap_and_send_msg (fd_ringmaster, REGISTER, PORT, sizeof(PORT));
 
     printf("my port is %s\n", PORT);
 }

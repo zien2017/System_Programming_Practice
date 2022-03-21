@@ -7,6 +7,9 @@
 #include <string.h>
 #include "potato.h"
 #include "socket_select_server.h"
+#include "message_wrapper.h"
+#define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
+
 
 
 int port_num, num_players, num_hops;
@@ -149,7 +152,12 @@ void throw_a_potato () {
 
 int server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
-    if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
+//    if ((nbytes = recv(fd, buf, sizeof_buf, 0)) <= 0) {
+    // header buffer
+    char header_buf[sizeof(struct msg_header)];
+    struct msg_header* header_p = (struct msg_header *) header_buf;
+
+    if (recv_and_unwrap_msg(fd, buf, header_p) != 0) {
         // got error or connection closed by client
         if (nbytes == 0) {
             // connection closed
@@ -161,6 +169,11 @@ int server_recv_data (int fd, int nbytes, int fdmax, int listener, char* buf, in
         FD_CLR(fd, master_p); // remove from master set
         return 1; // error exit
     }
+    char temp_type[10];
+    if (header_p->type == REGISTER) {
+        strcpy(temp_type, "register");
+    }
+    printf("msg type: %s, size: %d\n", temp_type, header_p->size);
 
     // we got some data from a client
 
