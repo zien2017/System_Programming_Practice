@@ -59,7 +59,7 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
         // got error or connection closed by client
         if (total_size == 0) {
             // connection closed
-            printf("socket %d hung up\n", fd);
+//            printf("socket %d hung up\n", fd);
             close(fd);
         } else {
             perror("recv");
@@ -71,7 +71,7 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
         memcpy(msg_body, temp_buf + sizeof (struct msg_header), header->size);
     }
     if (total_size - sizeof (struct msg_header) != header->size) {
-        printf("wrapper: incomplete msg received! from %d \n", fd);
+        fprintf(stderr, "ERR: wrapper: incomplete msg received! from %d \n", fd);
         close(fd);
         return -1;
     }
