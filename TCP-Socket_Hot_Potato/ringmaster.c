@@ -71,13 +71,13 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         }
 //        printf("ringmaster: new connection from %s on "
 //               "socket %d\n",
-//               inet_ntop(remoteaddr_p->ss_family,
-//                         get_in_addr((struct sockaddr *) remoteaddr_p),
-//                         remoteIP, INET6_ADDRSTRLEN),
+//
 //               newfd);
-
+        inet_ntop(remoteaddr_p->ss_family,
+                  get_in_addr((struct sockaddr *) remoteaddr_p),
+                  remoteIP, INET6_ADDRSTRLEN),
         // save the new connection ip
-        memcpy(player_fd_to_addr_mapping[newfd], remoteIP, *addrlen_p);
+        strcpy(player_fd_to_addr_mapping[newfd], remoteIP);
 
     }
 
@@ -104,7 +104,7 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     newPlayer->fd = fd;
     newPlayer->player_id = connected_player;
     newPlayer->player_port = atoi(buf);
-    memcpy(& newPlayer->player_addr, player_fd_to_addr_mapping[fd], INET6_ADDRSTRLEN);
+    strcpy(newPlayer->player_addr, player_fd_to_addr_mapping[fd]);
 
 //    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
 //    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
