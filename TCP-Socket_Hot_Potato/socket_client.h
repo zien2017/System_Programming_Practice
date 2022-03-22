@@ -49,6 +49,8 @@ int client_setup(char * hostname, char* port) {
 
     if ((rv = getaddrinfo(hostname, port, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        fprintf(stderr, "\thostname: %s\n", hostname);
+        fprintf(stderr, "\tport: %s\n", port);
         exit (1);
     }
 

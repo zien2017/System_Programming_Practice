@@ -9,9 +9,9 @@
 #include "potato.h"
 #include "socket_client.h"
 #include "message_wrapper.h"
-//#define PORT "30003"
 
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
+
 
 fd_set master, read_fds;
 int fdmax = 10;
@@ -28,7 +28,6 @@ int fd_server_RHS = -1;
 
 int has_sent_ready = 0;
 
-//pthread_t t;
 
 void refresh_fd_set () {
 //    printf("refreshing fd: %d %d %d %d\n", listener_fd, fd_ringmaster, fd_client_LHS, fd_server_RHS);
@@ -60,8 +59,8 @@ void input_checker (int argc, char** argv) {
         printf("Arguments usage: player <machine_name> <port_num>\n");
         exit(1);
     }
-
-    char* machine_name = argv[1];
+//
+//    char* machine_name = argv[1];
     int port_num = atoi(argv[2]);
     if (port_num <= 0 || 65536 < port_num) {
         printf("ERR: port_num error: %d\n", port_num);
@@ -174,8 +173,12 @@ void connect_to_adjacent_player (char* buf) {
     char port_str[6];
     sprintf(port_str, "%d", p_info->player_port);
 
+    char remoteIP[INET6_ADDRSTRLEN];
+    strcpy(remoteIP, p_info->player_addr);
+
     // set fd_client_LHS
-    fd_client_LHS = client_setup (p_info->player_addr, port_str);
+    fd_client_LHS = client_setup (remoteIP, port_str);
+
     refresh_fd_set();
 
     send_ready();
@@ -318,13 +321,11 @@ int main(int argc, char** argv) {
     // set fd_server_RHS
     listener_fd = server_setup ();
 
-
     // set client fd from ringmaster
     fd_ringmaster = client_setup (argv[1], argv[2]);
 
     // register to the ringmaster
     register_to_ringmaster ();
-
 
     // main loop
     player_main_loop();

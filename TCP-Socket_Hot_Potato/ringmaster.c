@@ -39,7 +39,7 @@ void input_parser (int argc, char** argv) {
         printf("ERR: port_num error: %d\n", port_num);
         exit(1);
     }
-    if (num_players <= 0 || 300 < num_players) {
+    if (num_players <= 0 || 1000 < num_players) {
         printf("ERR: num_players error: %d\n", num_players);
         exit(1);
     }

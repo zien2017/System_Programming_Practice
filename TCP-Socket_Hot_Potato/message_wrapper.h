@@ -62,7 +62,7 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
 //            printf("socket %d hung up\n", fd);
             close(fd);
         } else {
-            perror("recv");
+            perror("msg_wrapper recv : ");
         }
         return -1;
     }

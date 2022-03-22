@@ -1,0 +1,6 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /tmp/tmp.3fKTr0t1N4
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/tmp.3fKTr0t1N4/cmake-build-debug-duke-remote
+Cannot read /Users/brandonwong/GitHub/malloc_r/TCP-Socket_Hot_Potato/cmake-build-debug-duke-remote/CMakeFiles/TargetDirectories.txt
+Cannot read CMake dependency information from '/Users/brandonwong/GitHub/malloc_r/TCP-Socket_Hot_Potato/cmake-build-debug-duke-remote/CMakeFiles/Makefile.cmake'
