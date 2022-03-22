@@ -187,28 +187,30 @@ void connect_to_adjacent_player (char* buf) {
 
 void add_new_conn () {
     struct sockaddr_storage remoteaddr; // client address
+    memset(&remoteaddr, 0, sizeof remoteaddr);
 
-    char buf[BUFFER_SIZE];    // buffer for client data
 
-    char remoteIP[INET6_ADDRSTRLEN];
+//    char buf[BUFFER_SIZE];    // buffer for client data
+//    char remoteIP[INET6_ADDRSTRLEN];
 
     fd_set master;    // master file descriptor list
     fd_set read_fds;  // temp file descriptor list for select()
     int fdmax;        // maximum file descriptor number
-    socklen_t addrlen;
+    socklen_t addrlen = sizeof (remoteaddr);
 
     fd_server_RHS = accept(listener_fd, // newly accept()ed socket descriptor
                            (struct sockaddr *)&remoteaddr,
                            &addrlen);
     // handle new connections
-    if (fd_server_RHS == -1) {
+    if (fd_server_RHS < 0) {
         perror("accept");
+        printf("ERR: fd_server_RHS err! id = %d\n", player_id);
+        printf("%d\n", errno);
     } else {
         FD_SET (fd_server_RHS, &master); // add to master set
         fdmax = fdmax > fd_server_RHS? fdmax : fd_server_RHS;
     }
 
-    if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
 
     refresh_fd_set();
 

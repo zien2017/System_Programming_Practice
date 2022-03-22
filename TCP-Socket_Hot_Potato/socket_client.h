@@ -47,7 +47,6 @@ int client_setup(char * hostname, char* port) {
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    printf("\thostname: %s\n", hostname);
     if ((rv = getaddrinfo(hostname, port, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         fprintf(stderr, "\thostname: %s\n", hostname);

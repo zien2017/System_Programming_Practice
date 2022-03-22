@@ -171,7 +171,7 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     if (recv_and_unwrap_msg(fd, body_buf, h) == -1) {
         // got error or connection closed by client
         // connection closed
-        printf("ringmaster: socket %d hung up\n", fd);
+//        printf("ringmaster: socket %d hung up\n", fd);
         close(fd); // bye!
         FD_CLR(fd, master_p); // remove from master set
         return 1; // error exit
