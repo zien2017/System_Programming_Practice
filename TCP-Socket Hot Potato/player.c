@@ -8,9 +8,8 @@
 #include <time.h>
 #include "potato.h"
 #include "socket_client.h"
-#include "socket_select_server.h"
 #include "message_wrapper.h"
-#define PORT "30001"
+//#define PORT "30003"
 
 #define BUFFER_SIZE sizeof (struct _potato ) + sizeof (struct msg_header)
 
@@ -20,6 +19,7 @@ int player_id = -1;
 int num_player = -1;
 int left_player = -1;
 int right_player = -1;
+char my_server_port[6];
 
 int listener_fd;
 int fd_ringmaster = -1;
@@ -78,6 +78,71 @@ void send_ready () {
     }
 }
 
+
+
+int server_setup() {
+
+    int listener;     // listening socket descriptor
+    int yes = 1;        // for setsockopt() SO_REUSEADDR, below
+    int rv;
+
+    struct addrinfo hints, *ai, *p;
+
+    // get us a socket and bind it
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    if ((rv = getaddrinfo(NULL, "0", &hints, &ai)) != 0) {
+        fprintf(stderr, "select_server: %s\n", gai_strerror(rv));
+        exit(1);
+    }
+
+    for(p = ai; p != NULL; p = p->ai_next) {
+        listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (listener < 0) {
+            continue;
+        }
+
+        // lose the pesky "address already in use" error message
+        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+
+        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
+            close(listener);
+            continue;
+        }
+
+        // get random port and rewrite back to char* port
+        struct sockaddr_in addr;
+        int size=sizeof(addr);
+        getsockname(listener, (void*) &addr, (socklen_t *) & size);
+        int new_port = ntohs( addr.sin_port);
+
+        sprintf(my_server_port, "%d", new_port);
+
+        break;
+    }
+
+    // if we got here, it means we didn't get bound
+    if (p == NULL) {
+        fprintf(stderr, "selectserver: failed to bind\n");
+        exit(2);
+    }
+
+    freeaddrinfo(ai); // all done with this
+
+
+    // listen
+    if (listen(listener, 10) == -1) {
+        perror("listen");
+        exit(3);
+    }
+
+    return listener;
+
+}
+
 void throw_potato(char* buf ){
     // received a potato
     struct _potato * p = (struct _potato *) buf;
@@ -117,16 +182,6 @@ void connect_to_adjacent_player (char* buf) {
 }
 
 
-int server_new_connection (int listener, int my_fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
-    printf("ERR: No data should be received here!\n");
-    return 0;
-}
-
-int server_recv_data (int i, int fdmax, int listener, char* buf, int sizeof_buf, fd_set * master_p) {
-    printf("ERR: No data should be received here!\n");
-    return 0;
-}
-
 void add_new_conn () {
     struct sockaddr_storage remoteaddr; // client address
 
@@ -148,12 +203,6 @@ void add_new_conn () {
     } else {
         FD_SET (fd_server_RHS, &master); // add to master set
         fdmax = fdmax > fd_server_RHS? fdmax : fd_server_RHS;
-//        printf("player: new connection from %s on "
-//               "socket %d\n",
-//               inet_ntop((&remoteaddr)->ss_family,
-//                         get_in_addr((struct sockaddr *) &remoteaddr),
-//                         remoteIP, INET6_ADDRSTRLEN),
-//               fd_server_RHS);
     }
 
     if (fd_server_RHS < 0) printf("ERR: fd_server_RHS err!\n");
@@ -200,7 +249,6 @@ int player_main_loop () {
             if (recv_and_unwrap_msg(fd, buf, h) == -1) {
                 // got error or connection closed by client
                 // connection closed
-//                printf("ringmaster: socket %d hung up\n", fd);
                 close(fd); // bye!
                 FD_CLR(fd, &master); // remove from master set
                 return 1; // error exit
@@ -246,7 +294,7 @@ int player_main_loop () {
 
 
 void register_to_ringmaster () {
-    wrap_and_send_msg (fd_ringmaster, REGISTER, PORT, sizeof(PORT));
+    wrap_and_send_msg (fd_ringmaster, REGISTER, my_server_port, 6);
 //    printf("\tmy port is %s\n", PORT);
 }
 
@@ -260,6 +308,7 @@ int main(int argc, char** argv) {
     // argv[1] machine name of ringmaster
     // argv[2] port_num of ringmaster
 
+    memcpy(my_server_port, "30003", 6);
 
     input_checker(argc, argv);
 
@@ -267,8 +316,7 @@ int main(int argc, char** argv) {
 
 
     // set fd_server_RHS
-    listener_fd = server_setup (PORT);
-
+    listener_fd = server_setup ();
 
 
     // set client fd from ringmaster
