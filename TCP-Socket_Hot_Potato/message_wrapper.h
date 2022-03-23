@@ -7,14 +7,11 @@
 #include "potato.h"
 
 enum msg_type {
-    DEFAULT,
-    STR,
-    REGISTER,
-    POTATO,
     PLAYER_INFO,
+    REGISTER,
     REGISTER_RET,
     READY,
-    ACK,
+    POTATO,
 };
 
 struct msg_header {
@@ -35,6 +32,7 @@ struct playerInfo {
     struct playerInfo * next;
 } ;
 
+// wrap the msg with a header and send
 void wrap_and_send_msg (int fd, enum msg_type type, void* msg_body, int size) {
     char temp_buf[sizeof (struct msg_header) + size];
 
@@ -51,15 +49,14 @@ void wrap_and_send_msg (int fd, enum msg_type type, void* msg_body, int size) {
         perror("MSG sending failure ");
 }
 
+// received and unwrap the msg, separate it to a header and a body
 int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
     char temp_buf[sizeof (struct msg_header) + sizeof(struct _potato)];
     int total_size = 0;
-
     if ((total_size = recv(fd, temp_buf, sizeof (temp_buf), 0)) <= 0) {
         // got error or connection closed by client
         if (total_size == 0) {
             // connection closed
-//            printf("socket %d hung up\n", fd);
             close(fd);
         } else {
             perror("msg_wrapper recv : ");
@@ -75,7 +72,6 @@ int recv_and_unwrap_msg (int fd, void* msg_body, struct msg_header *header) {
         close(fd);
         return -1;
     }
-
     return header->size;
 }
 

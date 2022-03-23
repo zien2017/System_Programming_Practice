@@ -16,9 +16,8 @@
 #include "message_wrapper.h"
 #define BUFFER_SIZE sizeof (struct _potato) + sizeof (struct msg_header)
 
-//#define PORT "9034"   // port we're listening on
 
-// get sockaddr, IPv4 or IPv6:
+// get a in_addr
 void *get_in_addr(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET) {
@@ -28,17 +27,16 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+// server received a new connection
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) ;
 
+// server received a data
 int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p);
 
-
+// the main loop of the server
 int server_main_loop (int listener) {
-
     struct sockaddr_storage remoteaddr; // client address
-
     char buf[BUFFER_SIZE];    // buffer for client data
-
     char remoteIP[INET6_ADDRSTRLEN];
 
     fd_set master;    // master file descriptor list
@@ -52,20 +50,16 @@ int server_main_loop (int listener) {
 
     // add the listener to the master set
     FD_SET(listener, &master);
-
     // keep track of the biggest file descriptor
     fdmax = listener;
-
 
     // main loop
     for(;;) {
         read_fds = master; // copy it
-
         if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
             perror("select");
-            exit(4);
+            return (4);
         }
-
         // run through the existing connections looking for data to read
         for(i = 0; i <= fdmax; i++) {
             if (FD_ISSET(i, &read_fds)) { // we got one!!
@@ -79,69 +73,46 @@ int server_main_loop (int listener) {
             } // END got new incoming connection
         } // END looping through file descriptors
     } // END for(;;)--and you thought it would never end!
-
 }
 
-
+// setup a server with the port listen
 int server_setup(char* port) {
-
     int listener;     // listening socket descriptor
-
     int yes = 1;        // for setsockopt() SO_REUSEADDR, below
     int rv;
-
     struct addrinfo hints, *ai, *p;
-
-
     // get us a socket and bind it
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-
     if ((rv = getaddrinfo(NULL, port, &hints, &ai)) != 0) {
         fprintf(stderr, "select_server: %s\n", gai_strerror(rv));
         exit(1);
     }
-
     for(p = ai; p != NULL; p = p->ai_next) {
         listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if (listener < 0) {
             continue;
         }
-
-
-        // lose the pesky "address already in use" error message
         setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
-
         if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
             close(listener);
             continue;
         }
-
         break;
     }
 
-    // if we got here, it means we didn't get bound
     if (p == NULL) {
         fprintf(stderr, "selectserver: failed to bind\n");
         exit(2);
     }
-
-    freeaddrinfo(ai); // all done with this
-
-
-    // listen
+    freeaddrinfo(ai);
     if (listen(listener, 10) == -1) {
         perror("listen");
         exit(3);
     }
-
     return listener;
-
 }
-
-
-
 
 #endif //TCP_SOCKET_HOT_POTATO_SOCKET_SELECT_SERVER_H

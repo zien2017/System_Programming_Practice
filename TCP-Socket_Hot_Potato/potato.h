@@ -11,7 +11,6 @@ struct _potato {
 } potato;
 
 
-
 #endif //TCP_SOCKET_HOT_POTATO_POTATO_H
 
 

@@ -18,17 +18,15 @@ char player_addrs[255][INET6_ADDRSTRLEN];
 char player_ports[255][5];
 char player_fd_to_addr_mapping[255][INET6_ADDRSTRLEN];
 
-//struct _potato * my_potato = NULL;
-
 int connected_player = 0;
 int ready_player = 0;
 int start = 0;
 
 // input checker
-void input_parser (int argc, char** argv) {
+int input_parser (int argc, char** argv) {
     if (argc != 4) {
         printf("Arguments usage: ringmaster <port_num> <num_players> <num_hops>\n");
-        exit(1);
+        return (1);
     }
 
     port_num = atoi(argv[1]);
@@ -37,23 +35,23 @@ void input_parser (int argc, char** argv) {
 
     if (port_num <= 0 || 65536 < port_num) {
         printf("ERR: port_num error: %d\n", port_num);
-        exit(1);
+        return (1);
     }
     if (num_players <= 0 || 1000 < num_players) {
         printf("ERR: num_players error: %d\n", num_players);
-        exit(1);
+        return (1);
     }
     if (num_hops <= 0 || 65536 < num_hops) {
         printf("ERR: num_hops error: %d\n", num_hops);
-        exit(1);
+        return (1);
     }
     printf("Potato Ringmaster\n");
     printf("\tPlayers = %d\n", num_players);
     printf("\tHops = %d\n", num_hops);
-
+    return 0;
 }
 
-
+// new connection from clients
 int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * addrlen_p, struct sockaddr_storage * remoteaddr_p, fd_set * master_p) {
     *addrlen_p = sizeof (*remoteaddr_p);
 
@@ -69,10 +67,6 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
         if (newfd > fdmax) {    // keep track of the max
             fdmax = newfd;
         }
-//        printf("ringmaster: new connection from %s on "
-//               "socket %d\n",
-//
-//               newfd);
         inet_ntop(remoteaddr_p->ss_family,
                   get_in_addr((struct sockaddr *) remoteaddr_p),
                   remoteIP, INET6_ADDRSTRLEN),
@@ -84,6 +78,7 @@ int server_new_connection (int listener, int fdmax, char* remoteIP, socklen_t * 
     return fdmax;
 }
 
+// assign player with a id
 void assign_player_id (int fd, struct playerInfo * player_info) {
     struct register_ret ret;
     ret.player_id = player_info->player_id;
@@ -92,8 +87,8 @@ void assign_player_id (int fd, struct playerInfo * player_info) {
     printf("Player %d is ready to play\n", ret.player_id);
 }
 
+// add a player and save its information
 struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
-    // add a player
 
     struct playerInfo * newPlayer = malloc (sizeof (struct playerInfo));
     // add new player info to the header
@@ -106,18 +101,14 @@ struct playerInfo *  add_one_player (int fd, char* buf, int nbytes) {
     newPlayer->player_port = atoi(buf);
     strcpy(newPlayer->player_addr, player_fd_to_addr_mapping[fd]);
 
-//    printf("ringmaster: recv (%d bytes): %s\n", nbytes, buf);
-//    printf("\tcreate new player %s:%d\n", newPlayer->player_addr, newPlayer->player_port);
-//    printf("\t#connected_player = %d\n", connected_player);
     ++ connected_player;
-
     return newPlayer;
 }
 
+// initialize a ring by telling players their neighbors
 void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
     // create a ring by sending neighbor addresses to players
     start = 1;
-//    printf("creating rings ... \n");
     for(int j = 0; j <= fdmax; j++) {
         if (FD_ISSET(j, master_p)) {
             // except the listener
@@ -133,25 +124,26 @@ void initialize_a_ring (int listener, int fdmax, fd_set * master_p) {
                 temp_p = playerInfo_dummy_head;
             }
             // send the player info next to him
-//            printf("send port %d to fd %d\n", temp_p->next->player_port, temp_p->next->fd);
             wrap_and_send_msg(j, PLAYER_INFO, temp_p->next, sizeof (struct playerInfo));
         }
     }
 }
 
+// setup a potato and send to a random player
 void setup_and_throw_a_potato () {
-    struct _potato* my_potato = malloc (sizeof (struct _potato));
-    memset(my_potato, 0, sizeof (struct _potato));
-    my_potato->remaining_counter = num_hops;
+    struct _potato my_potato;
+    memset(&my_potato, 0, sizeof (struct _potato));
+    my_potato.remaining_counter = num_hops;
     int random = rand() % num_players;
     struct playerInfo * player = playerInfo_dummy_head->next;
     for (int i = 0; i < random; ++ i) {
         player = player->next;
     }
     printf("Ready to start the game, sending potato to player %d\n", player->player_id);
-    wrap_and_send_msg(player->fd, POTATO, my_potato, sizeof (struct _potato));
+    wrap_and_send_msg(player->fd, POTATO, &my_potato, sizeof (struct _potato));
 }
 
+// print the player trace
 void print_trace(struct _potato* my_potato) {
     printf("Trace of potato:\n");
     printf("%d", my_potato->player_list[num_hops]);
@@ -161,9 +153,9 @@ void print_trace(struct _potato* my_potato) {
     printf("\n");
 }
 
+// received a data from player
 int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeof_buf, fd_set * master_p) {
     // handle data from a client
-//    if ((nbytes = recv(fd, body_buf, sizeof_buf, 0)) <= 0) {
     // header buffer
     char header_buf[sizeof(struct msg_header)];
     struct msg_header* h = (struct msg_header *) header_buf;
@@ -195,7 +187,6 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
     if (h->type == READY) {
         // got ready info from a player
         ++ ready_player;
-//        printf("[Debug] ready fd = %d\n", fd);
         if (ready_player == num_players){
             setup_and_throw_a_potato();
         }
@@ -213,12 +204,14 @@ int server_recv_data (int fd, int fdmax, int listener, char* body_buf, int sizeo
 
 }
 
+// free up the palyer_info helper
 void free_up_playInfo (struct playerInfo * curr) {
     if (curr->next != NULL)
         free_up_playInfo(curr->next);
     free(curr);
 }
 
+// free up space
 void free_up_space () {
     free_up_playInfo (playerInfo_dummy_head);
 }
@@ -235,19 +228,19 @@ int main(int argc, char** argv) {
     memset(player_fd_to_addr_mapping, 0, sizeof player_fd_to_addr_mapping);
 
 
-    input_parser (argc, argv);
+    if (input_parser (argc, argv)) {
+        free_up_space();
+        exit(1);
+    }
 
     srand( (unsigned int) time (NULL) + num_players );
 
-
     int listener_fd = server_setup (argv[1]);
 
-    server_main_loop(listener_fd);
+    server_main_loop(listener_fd); // the main loop of the server
 
-    close(listener_fd);
-
+    close(listener_fd); // close listener fd
     free_up_space();
-
     return 0;
 }
 
