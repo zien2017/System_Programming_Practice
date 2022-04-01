@@ -35,7 +35,7 @@ int tableCleaner(connection * C) {
 
 	std::string sql;
 
-	sql = "DROP TABLE COMPANY"
+	sql = "DROP TABLE IF EXISTS COMPANY"
 		  "  CASCADE ";
 
 	/* Create a transactional object. */
