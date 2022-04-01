@@ -1,4 +1,4 @@
-CFLAGS=-std=gnu99 -ggdb3
+CFLAGS=-std=gnu99 -ggdb3 -Wall -Werror
 PROGS=ringmaster player
 
 all: $(PROGS)

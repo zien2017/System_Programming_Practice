@@ -170,7 +170,7 @@ void add_new_conn () {
     memset(&remoteaddr, 0, sizeof remoteaddr);
 
     fd_set master;    // master file descriptor list
-    int fdmax;        // maximum file descriptor number
+    int fdmax = 10;        // maximum file descriptor number
     socklen_t addrlen = sizeof (remoteaddr);
 
     fd_server_RHS = accept(listener_fd, // newly accept()ed socket descriptor
@@ -278,6 +278,8 @@ int main(int argc, char** argv) {
     player_main_loop();
 
     client_close (fd_ringmaster);
+    close(listener_fd);
+
 
     return 0;
 }
