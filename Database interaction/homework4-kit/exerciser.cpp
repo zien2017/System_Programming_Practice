@@ -1,6 +1,5 @@
 #include "exerciser.h"
 
-void exercise(connection *C)
-{
+void exercise(connection *C) {
 
 }

@@ -3,15 +3,14 @@
 #include <string>
 
 #include "exerciser.h"
+#include "files_reader.h"
 
 using namespace std;
 using namespace pqxx;
 
-int tableCreator(connection *C)
-{
 
-	/* Create SQL statement */
 
+void tableCreator(connection *C) {
 	std::string STATE, COLOR, TEAM, PLAYER;
 
 	STATE = "CREATE TABLE STATE("
@@ -25,7 +24,7 @@ int tableCreator(connection *C)
 			;
 
 	TEAM =  "CREATE TABLE TEAM("
-			"TEAM_ID       INT PRIMARY KEY   NOT NULL,"
+			"TEAM_ID        INT PRIMARY KEY   NOT NULL,"
 			"NAME           TEXT    NOT NULL,"
 			"STATE_ID 		INT     NOT NULL      REFERENCES STATE(STATE_ID),"
 			"COLOR_ID 		INT     NOT NULL      REFERENCES COLOR(COLOR_ID),"
@@ -47,22 +46,15 @@ int tableCreator(connection *C)
 				"BPG            INT);"
 				;
 
-	/* Create a transactional object. */
-	work W(*C);
+	exec_commit_sql (C, STATE);
+	exec_commit_sql (C, COLOR);
+	exec_commit_sql (C, TEAM);
+	exec_commit_sql (C, PLAYER);
 
-	/* Execute SQL query */
-	W.exec(STATE);
-	W.exec(COLOR);
-	W.exec(TEAM);
-	W.exec(PLAYER);
-	W.commit();
-	cout << "Table created successfully" << endl;
 }
 
-int tableCleaner(connection *C)
+void tableCleaner(connection *C)
 {
-
-	/* Create SQL statement */
 
 	std::string sql;
 
@@ -71,13 +63,8 @@ int tableCleaner(connection *C)
 		  "DROP TABLE IF EXISTS STATE CASCADE;"
 		  "DROP TABLE IF EXISTS COLOR CASCADE;";
 
-	/* Create a transactional object. */
-	work W(*C);
+	exec_commit_sql (C, sql);
 
-	/* Execute SQL query */
-	W.exec(sql);
-	W.commit();
-	cout << "Table dropped successfully" << endl;
 }
 
 int main(int argc, char *argv[])
@@ -111,6 +98,9 @@ int main(int argc, char *argv[])
 	// TODO: create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
 	//       load each table with rows from the provided source txt files
 	tableCreator(C);
+
+	read_files(C);
+
 
 	exercise(C);
 

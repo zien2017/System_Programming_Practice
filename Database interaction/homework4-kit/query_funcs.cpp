@@ -1,5 +1,12 @@
 #include "query_funcs.h"
 
+void exec_commit_sql (connection *C, string sql) {
+	work W(*C);
+	W.exec(sql);
+	W.commit();
+	// cout << "succeed" << endl;
+}
+
 
 void add_player(connection *C, int team_id, int jersey_num, string first_name, string last_name,
                 int mpg, int ppg, int rpg, int apg, double spg, double bpg)
