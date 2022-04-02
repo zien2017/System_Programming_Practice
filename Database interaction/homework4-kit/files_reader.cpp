@@ -1,5 +1,15 @@
 #include "files_reader.h"
 
+string sanitizer (string input) {
+    auto it = input.begin();
+    string result;
+    while (it != input.end()) {
+        if (*it == '\'') result.push_back('\'');
+        result.push_back(* it);
+        ++ it;
+    }
+    return result;
+}
 
 void read_states (connection * C) {
     string line;
@@ -106,6 +116,11 @@ void read_players (connection * C) {
               >> apg
               >> spg
               >> bpg;
+
+        first_name = sanitizer (first_name);
+        last_name = sanitizer (last_name);
+
+
         string sql = "INSERT INTO PLAYER ("
             "PLAYER_ID,"
             "TEAM_ID,"
