@@ -1,4 +1,5 @@
 #include "files_reader.h"
+#include "query_funcs.h"
 
 string sanitizer (string input) {
     auto it = input.begin();
@@ -16,7 +17,7 @@ string sanitizer (string input) {
 void read_states (connection * C) {
     string line;
     ifstream MyReadFile("state.txt");
-	work W(*C);
+	// work W(*C);
 
     while (getline (MyReadFile, line)) {
         std::string id;
@@ -25,12 +26,14 @@ void read_states (connection * C) {
         tuple << line;
         tuple >> id
               >> name;
-        std::string sql = "INSERT INTO STATE (STATE_ID, NAME) VALUES ( " + id + ", \'" + name + "\');";
-        W.exec(sql);
+        add_state(C, name);
+        // std::string sql = "INSERT INTO STATE (STATE_ID, NAME) VALUES ( " + id + ", \'" + name + "\');";
+        // W.exec(sql);
+
         // cout << sql << endl; 
     }
 
-	W.commit();
+	// W.commit();
 
     MyReadFile.close();
 }
@@ -38,7 +41,7 @@ void read_states (connection * C) {
 void read_colors (connection * C) {
     string line;
     ifstream MyReadFile("color.txt");
-	work W(*C);
+	// work W(*C);
 
     while (getline (MyReadFile, line)) {
         std::string id;
@@ -47,12 +50,14 @@ void read_colors (connection * C) {
         tuple << line;
         tuple >> id
               >> name;
-        std::string sql = "INSERT INTO COLOR (COLOR_ID, NAME) VALUES ( " + id + ", \'" + name + "\');";
-        W.exec(sql);
+        add_color (C, name);
+        // std::string sql = "INSERT INTO COLOR (COLOR_ID, NAME) VALUES ( " + id + ", \'" + name + "\');";
+        // W.exec(sql);
+
         // cout << sql << endl; 
     }
 
-	W.commit();
+	// W.commit();
 
     MyReadFile.close();
 }
@@ -60,7 +65,7 @@ void read_colors (connection * C) {
 void read_teams (connection * C) {
     string line;
     ifstream MyReadFile("team.txt");
-	work W(*C);
+	// work W(*C);
 
     while (getline (MyReadFile, line)) {
         string id;
@@ -77,13 +82,15 @@ void read_teams (connection * C) {
               >> color_id
               >> wins
               >> losses;
-        string sql = "INSERT INTO TEAM (TEAM_ID, NAME, STATE_ID, COLOR_ID, WINS, LOSSES) VALUES ( "
-                     + id + ",\'" + name + "\'," + state_id + "," + color_id + "," + wins + "," + losses + ");";
-        W.exec(sql);
+        
+        add_team (C, name,  stoi(state_id), stoi(color_id), stoi(wins), stoi(losses));
+        // string sql = "INSERT INTO TEAM (TEAM_ID, NAME, STATE_ID, COLOR_ID, WINS, LOSSES) VALUES ( "
+                    //  + id + ",\'" + name + "\'," + state_id + "," + color_id + "," + wins + "," + losses + ");";
+        // W.exec(sql);
         // cout << sql << endl; 
     }
 
-	W.commit();
+	// W.commit();
 
     MyReadFile.close();
 }
@@ -91,7 +98,7 @@ void read_teams (connection * C) {
 void read_players (connection * C) {
     string line;
     ifstream MyReadFile("player.txt");
-	work W(*C);
+	// work W(*C);
 
     while (getline (MyReadFile, line)) {
         string player_id;
@@ -122,28 +129,30 @@ void read_players (connection * C) {
         first_name = sanitizer (first_name);
         last_name = sanitizer (last_name);
 
+        add_player (C, stoi(team_id), stoi(uniform_num), first_name, last_name,
+         stoi(mpg), stoi(ppg), stoi(rpg), stoi(apg), stoi(spg), stoi(bpg));
 
-        string sql = "INSERT INTO PLAYER ("
-            "PLAYER_ID,"
-            "TEAM_ID,"
-            "UNIFORM_NUM, "
-            "FIRST_NAME, "
-            "LAST_NAME, "
-            "MPG, "
-            "PPG, "
-            "RPG, "
-            "APG, "
-            "SPG, "
-            "BPG) VALUES ( "
-             + player_id + ",\'" + team_id + "\'," + uniform_num + ",\'"
-             + first_name + "\',\'" + last_name + "\'," 
-             + mpg + "," + ppg + "," + rpg + "," + apg + "," + spg + "," + bpg
-             + ");";
-        W.exec(sql);
+        // string sql = "INSERT INTO PLAYER ("
+        //     "PLAYER_ID,"
+        //     "TEAM_ID,"
+        //     "UNIFORM_NUM, "
+        //     "FIRST_NAME, "
+        //     "LAST_NAME, "
+        //     "MPG, "
+        //     "PPG, "
+        //     "RPG, "
+        //     "APG, "
+        //     "SPG, "
+        //     "BPG) VALUES ( "
+        //      + player_id + ",\'" + team_id + "\'," + uniform_num + ",\'"
+        //      + first_name + "\',\'" + last_name + "\'," 
+        //      + mpg + "," + ppg + "," + rpg + "," + apg + "," + spg + "," + bpg
+        //      + ");";
+        // W.exec(sql);
         // cout << sql << endl; 
     }
 
-	W.commit();
+	// W.commit();
 
     MyReadFile.close();
 }

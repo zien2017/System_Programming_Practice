@@ -9,23 +9,46 @@ void exec_commit_sql (connection *C, string sql) {
 
 
 void add_player(connection *C, int team_id, int jersey_num, string first_name, string last_name,
-                int mpg, int ppg, int rpg, int apg, double spg, double bpg)
-{
+                int mpg, int ppg, int rpg, int apg, double spg, double bpg) {
+
+    std::string sql = "INSERT INTO PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG, PPG, RPG, APG, SPG, BPG)";
+    sql.append (" VALUES ( ");
+    sql.append ( " " + to_string(team_id) );
+    sql.append ( " , " + to_string(jersey_num) );
+    sql.append ( " , \'" + first_name + "\' ");
+    sql.append ( " , \'" + last_name + "\' ");
+    sql.append ( " , " + to_string(mpg) );
+    sql.append ( " , " + to_string(ppg) );
+    sql.append ( " , " + to_string(rpg) );
+    sql.append ( " , " + to_string(apg) );
+    sql.append ( " , " + to_string(spg) );
+    sql.append ( " , " + to_string(bpg) );
+    sql.append ( ");" );
+    exec_commit_sql(C, sql);     
+
 }
 
 
-void add_team(connection *C, string name, int state_id, int color_id, int wins, int losses)
-{
+void add_team(connection *C, string name, int state_id, int color_id, int wins, int losses) {
+    std::string sql = "INSERT INTO TEAM (NAME, STATE_ID, COLOR_ID, WINS, LOSSES)";
+    sql.append (" VALUES ( ");
+    sql.append ( " \'" + name + "\' ");
+    sql.append ( " , " + to_string(state_id) );
+    sql.append ( " , " + to_string(color_id) );
+    sql.append ( " , " + to_string(wins) );
+    sql.append ( " , " + to_string(losses) );
+    sql.append ( ");" );
+    exec_commit_sql(C, sql);
 }
 
 
-void add_state(connection *C, string name)
-{
+void add_state(connection *C, string name) {
+    exec_commit_sql(C, "INSERT INTO STATE (NAME) VALUES ( \'" + name + "\');");
 }
 
 
-void add_color(connection *C, string name)
-{
+void add_color(connection *C, string name) {
+    exec_commit_sql(C, "INSERT INTO COLOR (NAME) VALUES ( \'" + name + "\');");
 }
 
 
@@ -102,11 +125,50 @@ void query3(connection *C, string team_name) {
 
 void query4(connection *C, string team_state, string team_color) {
 
+    string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME, PLAYER.UNIFORM_NUM"; 
+    sql.append(" FROM PLAYER " );
+    sql.append(" JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID ");
+    sql.append(" JOIN STATE ON TEAM.STATE_ID = STATE.STATE_ID ");
+    sql.append(" JOIN COLOR ON TEAM.COLOR_ID = COLOR.COLOR_ID ");
+    sql.append(" WHERE 0 = 0 ");
+    sql.append(" AND STATE.NAME LIKE \'" + team_state + "\'");
+    sql.append(" AND COLOR.NAME LIKE \'" + team_color + "\'");
+    // sql.append(" ORDER BY PLAYER.PPG DESC ");
+    sql.push_back(';');
+
+    nontransaction nt (*C);
+
+    result res (nt.exec(sql));
+    cout << "FIRST_NAME LAST_NAME JERSEY_NUMBER" << "\n";
+    for (auto it = res.begin(); it!=res.end(); ++ it){
+        for (int i = 0; i < it.size(); ++ i) {
+            cout << it[i].as<string>() << ' ';
+        }
+        cout << endl;
+    }
 
 }
 
 
 void query5(connection *C, int num_wins) {
 
+    string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME, TEAM.NAME, TEAM.WINS"; 
+    sql.append(" FROM PLAYER " );
+    sql.append(" JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID ");
+    sql.append(" WHERE 0 = 0 ");
+    sql.append(" AND TEAM.WINS > " + to_string (num_wins) );
+    // sql.append(" ORDER BY PLAYER.PPG DESC ");
+    sql.push_back(';');
+
+    nontransaction nt (*C);
+
+    result res (nt.exec(sql));
+    cout << "FIRST_NAME LAST_NAME TEAM_NAME WINS" << "\n";
+    for (auto it = res.begin(); it!=res.end(); ++ it){
+        for (int i = 0; i < it.size(); ++ i) {
+            cout << it[i].as<string>() << ' ';
+        }
+        cout << endl;
+    }
 
 }

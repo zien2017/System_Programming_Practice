@@ -14,17 +14,17 @@ void tableCreator(connection *C) {
 	std::string STATE, COLOR, TEAM, PLAYER;
 
 	STATE = "CREATE TABLE STATE("
-			"STATE_ID       INT PRIMARY KEY   NOT NULL,"
+			"STATE_ID   serial   PRIMARY KEY   NOT NULL,"
 			"NAME           TEXT    NOT NULL);"
 			;
 
 	COLOR = "CREATE TABLE COLOR("
-			"COLOR_ID       INT PRIMARY KEY   NOT NULL,"
+			"COLOR_ID       serial PRIMARY KEY  NOT NULL,"
 			"NAME           TEXT    NOT NULL);"
 			;
 
 	TEAM =  "CREATE TABLE TEAM("
-			"TEAM_ID        INT PRIMARY KEY   NOT NULL,"
+			"TEAM_ID        serial PRIMARY KEY  NOT NULL,"
 			"NAME           TEXT    NOT NULL,"
 			"STATE_ID 		INT     NOT NULL      REFERENCES STATE(STATE_ID),"
 			"COLOR_ID 		INT     NOT NULL      REFERENCES COLOR(COLOR_ID),"
@@ -33,7 +33,7 @@ void tableCreator(connection *C) {
 			;
 
 	PLAYER = 	"CREATE TABLE PLAYER("
-				"PLAYER_ID      INT PRIMARY KEY     NOT NULL,"
+				"PLAYER_ID      serial PRIMARY KEY   NOT NULL,"
 				"TEAM_ID 		INT     NOT NULL      REFERENCES TEAM(TEAM_ID),"
 				"UNIFORM_NUM	INT     NOT NULL,"
 				"FIRST_NAME     TEXT    NOT NULL,"
