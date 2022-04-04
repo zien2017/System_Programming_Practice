@@ -42,8 +42,8 @@ void tableCreator(connection *C) {
 				"PPG            INT,"
 				"RPG            INT,"
 				"APG            INT,"
-				"SPG            INT,"
-				"BPG            INT);"
+				"SPG            decimal(10,1),"
+				"BPG            decimal(10,1));"
 				;
 
 	exec_commit_sql (C, STATE);
