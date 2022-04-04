@@ -44,55 +44,69 @@ void query1(connection *C,
     if (use_apg) sql.append(" AND APG BETWEEN " + to_string(min_apg) + " AND " + to_string(max_rpg));
     if (use_spg) sql.append(" AND SPG BETWEEN " + to_string(min_spg) + " AND " + to_string(max_spg));
     if (use_bpg) sql.append(" AND BPG BETWEEN " + to_string(min_bpg) + " AND " + to_string(max_bpg));
+    sql.append(" ORDER BY MPG DESC, PPG DESC, RPG DESC, APG DESC, SPG DESC, BPG DESC;");
     sql.push_back(';');
 
     nontransaction nt (*C);
 
     result res (nt.exec(sql));
-    cout << "q1:" << "\n";
-    for(auto it = res.begin(); it!=res.end(); ++ it){
-        cout << it[0].as<string>() << '\n';
+    cout << "PLAYER_ID TEAM_ID UNIFORM_NUM FIRST_NAME LAST_NAME MPG PPG RPG APG SPG BPG" << "\n";
+    for (auto it = res.begin(); it!=res.end(); ++ it){
+        for (int i = 0; i < it.size(); ++ i) {
+            cout << it[i].as<string>() << ' ';
+        }
+        cout << endl;
     }
 
 }
 
 
 void query2(connection *C, string team_color) {
-    string sql = "SELECT * FROM COLOR JOIN TEAM ON TEAM.COLOR_ID = COLOR.COLOR_ID WHERE 0 = 0 ";
-    sql.append(" AND COLOR.NAME LIKE \'" + team_color + "\';");
+    string sql = "SELECT TEAM.NAME, COLOR.NAME FROM COLOR JOIN TEAM ON TEAM.COLOR_ID = COLOR.COLOR_ID WHERE 0 = 0 ";
+    sql.append(" AND COLOR.NAME LIKE \'" + team_color + "\'");
+    // sql.append(" ORDER BY MPG DESC, PPG DESC, RPG DESC, APG DESC, SPG DESC, BPG DESC;");
+    sql.push_back(';');
 
     nontransaction nt (*C);
 
     result res (nt.exec(sql));
-    cout << "q2:" << "\n";
-    for(auto it = res.begin(); it!=res.end(); ++ it){
-        cout << it[0].as<string>() << '\n';
+    cout << "TEAM.NAME COLOR" << "\n";
+    for (auto it = res.begin(); it!=res.end(); ++ it){
+        for (int i = 0; i < it.size(); ++ i) {
+            cout << it[i].as<string>() << ' ';
+        }
+        cout << endl;
     }
 }
 
 
 void query3(connection *C, string team_name) {
 
-    string sql = "SELECT * FROM PLAYER JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID WHERE 0 = 0 ";
+    string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME  FROM PLAYER JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID WHERE 0 = 0 ";
     sql.append(" AND TEAM.NAME LIKE \'" + team_name + "\'");
-    sql.append(" ORDER BY PLAYER.PPG DESC ;");
-
+    sql.append(" ORDER BY PLAYER.PPG DESC ");
+    sql.push_back(';');
 
     nontransaction nt (*C);
 
     result res (nt.exec(sql));
-    cout << "q3:" << "\n";
-    for(auto it = res.begin(); it!=res.end(); ++ it){
-        cout << it[0].as<string>() << '\n';
+    cout << "FIRST_NAME LAST_NAME" << "\n";
+    for (auto it = res.begin(); it!=res.end(); ++ it){
+        for (int i = 0; i < it.size(); ++ i) {
+            cout << it[i].as<string>() << ' ';
+        }
+        cout << endl;
     }
 }
 
 
-void query4(connection *C, string team_state, string team_color)
-{
+void query4(connection *C, string team_state, string team_color) {
+
+
 }
 
 
-void query5(connection *C, int num_wins)
-{
+void query5(connection *C, int num_wins) {
+
+
 }
