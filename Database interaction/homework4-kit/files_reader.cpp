@@ -2,13 +2,15 @@
 
 string sanitizer (string input) {
     auto it = input.begin();
-    string result;
-    while (it != input.end()) {
-        if (*it == '\'') result.push_back('\'');
-        result.push_back(* it);
+     while (it != input.end()) {
+        // if (*it == '\'') result.push_back('\'');
+        if (*it == '\'') {
+            input.insert(it, 1, '\'');
+            ++ it;
+        }
         ++ it;
     }
-    return result;
+    return input;
 }
 
 void read_states (connection * C) {
@@ -47,7 +49,7 @@ void read_colors (connection * C) {
               >> name;
         std::string sql = "INSERT INTO COLOR (COLOR_ID, NAME) VALUES ( " + id + ", \'" + name + "\');";
         W.exec(sql);
-        cout << sql << endl; 
+        // cout << sql << endl; 
     }
 
 	W.commit();
@@ -78,7 +80,7 @@ void read_teams (connection * C) {
         string sql = "INSERT INTO TEAM (TEAM_ID, NAME, STATE_ID, COLOR_ID, WINS, LOSSES) VALUES ( "
                      + id + ",\'" + name + "\'," + state_id + "," + color_id + "," + wins + "," + losses + ");";
         W.exec(sql);
-        cout << sql << endl; 
+        // cout << sql << endl; 
     }
 
 	W.commit();
@@ -138,7 +140,7 @@ void read_players (connection * C) {
              + mpg + "," + ppg + "," + rpg + "," + apg + "," + spg + "," + bpg
              + ");";
         W.exec(sql);
-        cout << sql << endl; 
+        // cout << sql << endl; 
     }
 
 	W.commit();
