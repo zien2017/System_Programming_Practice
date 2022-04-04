@@ -129,9 +129,9 @@ void throw_potato(char* buf ){
     p->player_list[p->remaining_counter] = player_id;
 
     // throw potato
-    if (p->remaining_counter == 0) {
+    if (p->remaining_counter == 1) {
         // ending give potato back to the ringmaster
-        printf("I’m it\n");
+        printf("I'm it\n");
         wrap_and_send_msg(fd_ringmaster, POTATO, p, sizeof (struct _potato));
     } else {
         -- p->remaining_counter;

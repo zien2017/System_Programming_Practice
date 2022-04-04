@@ -46,8 +46,8 @@ int input_parser (int argc, char** argv) {
         return (1);
     }
     printf("Potato Ringmaster\n");
-    printf("\tPlayers = %d\n", num_players);
-    printf("\tHops = %d\n", num_hops);
+    printf("Players = %d\n", num_players);
+    printf("Hops = %d\n", num_hops);
     return 0;
 }
 
@@ -147,7 +147,7 @@ void setup_and_throw_a_potato () {
 void print_trace(struct _potato* my_potato) {
     printf("Trace of potato:\n");
     printf("%d", my_potato->player_list[num_hops]);
-    for (int i = num_hops - 1; i >= 0; -- i) {
+    for (int i = num_hops - 1; i > 0; -- i) {
         printf(",%d", my_potato->player_list[i]);
     }
     printf("\n");
