@@ -3,50 +3,69 @@
 #include <string>
 
 #include "exerciser.h"
+#include "files_reader.h"
 
 using namespace std;
 using namespace pqxx;
 
-int tableCreator(connection * C) {
 
-	/* Create SQL statement */
+
+void tableCreator(connection *C) {
+	std::string STATE, COLOR, TEAM, PLAYER;
+
+	STATE = "CREATE TABLE STATE("
+			"STATE_ID   serial   PRIMARY KEY   NOT NULL,"
+			"NAME           TEXT    NOT NULL);"
+			;
+
+	COLOR = "CREATE TABLE COLOR("
+			"COLOR_ID       serial PRIMARY KEY  NOT NULL,"
+			"NAME           TEXT    NOT NULL);"
+			;
+
+	TEAM =  "CREATE TABLE TEAM("
+			"TEAM_ID        serial PRIMARY KEY  NOT NULL,"
+			"NAME           TEXT    NOT NULL,"
+			"STATE_ID 		INT     NOT NULL      REFERENCES STATE(STATE_ID),"
+			"COLOR_ID 		INT     NOT NULL      REFERENCES COLOR(COLOR_ID),"
+			"WINS           INT     NOT NULL,"
+			"LOSSES         INT     NOT NULL);"
+			;
+
+	PLAYER = 	"CREATE TABLE PLAYER("
+				"PLAYER_ID      serial PRIMARY KEY   NOT NULL,"
+				"TEAM_ID 		INT     NOT NULL      REFERENCES TEAM(TEAM_ID),"
+				"UNIFORM_NUM	INT     NOT NULL,"
+				"FIRST_NAME     TEXT    NOT NULL,"
+				"LAST_NAME      TEXT    NOT NULL,"
+				"MPG            INT,"
+				"PPG            INT,"
+				"RPG            INT,"
+				"APG            INT,"
+				"SPG            decimal(10,1),"
+				"BPG            decimal(10,1));"
+				;
+
+	exec_commit_sql (C, STATE);
+	exec_commit_sql (C, COLOR);
+	exec_commit_sql (C, TEAM);
+	exec_commit_sql (C, PLAYER);
+
+}
+
+void tableCleaner(connection *C)
+{
 
 	std::string sql;
 
-	sql = "CREATE TABLE COMPANY("
-		  "ID INT PRIMARY KEY     NOT NULL,"
-		  "NAME           TEXT    NOT NULL,"
-		  "AGE            INT     NOT NULL,"
-		  "ADDRESS        CHAR(50),"
-		  "SALARY         REAL );";
+	sql = "DROP TABLE IF EXISTS PLAYER CASCADE;"
+		  "DROP TABLE IF EXISTS TEAM CASCADE;"
+		  "DROP TABLE IF EXISTS STATE CASCADE;"
+		  "DROP TABLE IF EXISTS COLOR CASCADE;";
 
-	/* Create a transactional object. */
-	work W(*C);
+	exec_commit_sql (C, sql);
 
-	/* Execute SQL query */
-	W.exec(sql);
-	W.commit();
-	cout << "Table created successfully" << endl;
 }
-
-int tableCleaner(connection * C) {
-
-	/* Create SQL statement */
-
-	std::string sql;
-
-	sql = "DROP TABLE IF EXISTS COMPANY"
-		  "  CASCADE ";
-
-	/* Create a transactional object. */
-	work W(*C);
-
-	/* Execute SQL query */
-	W.exec(sql);
-	W.commit();
-	cout << "Table dropped successfully" << endl;
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -75,11 +94,13 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-
 	tableCleaner(C);
 	// TODO: create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
 	//       load each table with rows from the provided source txt files
 	tableCreator(C);
+
+	read_files(C);
+
 
 	exercise(C);
 
