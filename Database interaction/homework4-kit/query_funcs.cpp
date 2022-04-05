@@ -25,7 +25,6 @@ void add_player(connection *C, int team_id, int jersey_num, string first_name, s
     sql.append ( " , " + to_string(bpg) );
     sql.append ( ");" );
     exec_commit_sql(C, sql);     
-
 }
 
 
@@ -64,7 +63,7 @@ void query1(connection *C,
     if (use_mpg) sql.append(" AND MPG BETWEEN " + to_string(min_mpg) + " AND " + to_string(max_mpg));
     if (use_ppg) sql.append(" AND PPG BETWEEN " + to_string(min_ppg) + " AND " + to_string(max_ppg));
     if (use_rpg) sql.append(" AND RPG BETWEEN " + to_string(min_rpg) + " AND " + to_string(max_rpg));
-    if (use_apg) sql.append(" AND APG BETWEEN " + to_string(min_apg) + " AND " + to_string(max_rpg));
+    if (use_apg) sql.append(" AND APG BETWEEN " + to_string(min_apg) + " AND " + to_string(max_apg));
     if (use_spg) sql.append(" AND SPG BETWEEN " + to_string(min_spg) + " AND " + to_string(max_spg));
     if (use_bpg) sql.append(" AND BPG BETWEEN " + to_string(min_bpg) + " AND " + to_string(max_bpg));
     // sql.append(" ORDER BY MPG DESC, PPG DESC, RPG DESC, APG DESC, SPG DESC, BPG DESC;");

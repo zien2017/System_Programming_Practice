@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: /
+  port: 8080
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/acc_bball
+    username: postgres
+    password: passw0rd
+    driver-class-name: org.postgresql.Driver
+
+mybatis:
+  type-aliases-package: com.zw257.bean
+  mapper-locations: classpath:mapper/*.xml
