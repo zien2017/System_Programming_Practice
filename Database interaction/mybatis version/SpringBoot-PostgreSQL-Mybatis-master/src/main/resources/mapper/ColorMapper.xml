@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.banmajio.mapper.ColorMapper">
+
+	<select id="createTable">
+		CREATE TABLE COLOR(
+		COLOR_ID       serial PRIMARY KEY  NOT NULL,
+		NAME           TEXT    NOT NULL);
+	</select>
+
+	<select id="getColor" resultType="Color">
+		select * from STATE
+	</select>
+
+	<insert id="insertColor" parameterType="Color">
+		insert into
+		STATE (color_id, name) values(#{color_id}, #{name})
+	</insert>
+
+</mapper>

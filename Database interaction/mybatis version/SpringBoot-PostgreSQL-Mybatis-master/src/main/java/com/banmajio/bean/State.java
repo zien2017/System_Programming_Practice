@@ -2,10 +2,9 @@ package com.banmajio.bean;
 
 
 
-public class User {
+public class State {
+	private int state_id;
 	private String name;
-	private Integer age;
-
 	public String getName() {
 		return name;
 	}
@@ -14,12 +13,12 @@ public class User {
 		this.name = name;
 	}
 
-	public Integer getAge() {
-		return age;
-	}
+//	public Integer getAge() {
+//		return age;
+//	}
 
-	public void setAge(Integer age) {
-		this.age = age;
-	}
+//	public void setAge(Integer age) {
+//		this.age = age;
+//	}
 
 }

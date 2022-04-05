@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.banmajio.mapper.StateMapper">
+
+	<select id="createTable">
+		CREATE TABLE STATE(
+		STATE_ID     serial   PRIMARY KEY   NOT NULL,
+		NAME         TEXT     NOT NULL);
+	</select>
+
+
+	<select id="getState" resultType="State">
+		select * from STATE
+	</select>
+
+	<insert id="insertState" parameterType="State">
+		insert into
+		STATE (state_id, name) values(#{state_id}, #{name})
+	</insert>
+
+	<update id="updateState" parameterType="State">
+		update STATE set
+		name=#{name} where state_id = #{state_id}
+	</update>
+
+	<delete id="deleteState" parameterType="String">
+		delete from STATE
+		where name=#{name}
+	</delete>
+</mapper>
