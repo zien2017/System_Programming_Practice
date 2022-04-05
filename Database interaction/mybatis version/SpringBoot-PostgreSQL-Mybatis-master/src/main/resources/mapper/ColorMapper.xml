@@ -20,7 +20,7 @@
 
 	<insert id="insertColor" parameterType="Color">
 		insert into
-		COLOR (color_id, name) values(#{color_id}, #{name})
+		COLOR (name) values( #{name})
 	</insert>
 
 </mapper>

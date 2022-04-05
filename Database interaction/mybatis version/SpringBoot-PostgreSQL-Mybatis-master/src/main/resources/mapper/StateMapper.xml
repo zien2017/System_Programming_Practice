@@ -21,7 +21,7 @@
 
 	<insert id="insertState" parameterType="State">
 		insert into
-		STATE (state_id, name) values(#{state_id}, #{name})
+		STATE (name) values(#{name})
 	</insert>
 
 </mapper>

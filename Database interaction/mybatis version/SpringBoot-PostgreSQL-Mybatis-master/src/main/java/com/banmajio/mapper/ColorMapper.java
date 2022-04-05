@@ -14,7 +14,7 @@ public interface ColorMapper {
 
 	public List<Color> getColor();
 
-	public int insertColor(Color state);
+	public void insertColor(Color color);
 
 
 }
