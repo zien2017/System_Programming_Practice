@@ -3,6 +3,11 @@
 
 <mapper namespace="com.banmajio.mapper.ColorMapper">
 
+	<select id="dropTable">
+		DROP TABLE IF EXISTS COLOR CASCADE;
+	</select>
+
+
 	<select id="createTable">
 		CREATE TABLE COLOR(
 		COLOR_ID       serial PRIMARY KEY  NOT NULL,
@@ -10,12 +15,12 @@
 	</select>
 
 	<select id="getColor" resultType="Color">
-		select * from STATE
+		select * from COLOR
 	</select>
 
 	<insert id="insertColor" parameterType="Color">
 		insert into
-		STATE (color_id, name) values(#{color_id}, #{name})
+		COLOR (color_id, name) values(#{color_id}, #{name})
 	</insert>
 
 </mapper>

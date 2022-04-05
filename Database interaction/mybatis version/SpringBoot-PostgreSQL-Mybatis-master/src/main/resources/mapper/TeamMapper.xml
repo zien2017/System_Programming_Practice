@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.banmajio.mapper.TeamMapper">
+
+	<select id="dropTable">
+		DROP TABLE IF EXISTS TEAM CASCADE;
+	</select>
+
+	<select id="createTable">
+		CREATE TABLE TEAM(
+		TEAM_ID        serial PRIMARY KEY  NOT NULL,
+		NAME           TEXT    NOT NULL,
+		STATE_ID 		INT     NOT NULL      REFERENCES STATE(STATE_ID),
+		COLOR_ID 		INT     NOT NULL      REFERENCES COLOR(COLOR_ID),
+		WINS           INT     NOT NULL,
+		LOSSES         INT     NOT NULL)
+	</select>
+
+	<select id="getTeam" resultType="Team">
+		select * from TEAM
+	</select>
+
+	<insert id="insertTeam" parameterType="Team">
+		insert into
+			TEAM (team_id, name) values(#{team_id}, #{name})
+	</insert>
+
+</mapper>

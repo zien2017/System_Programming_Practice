@@ -3,6 +3,11 @@
 
 <mapper namespace="com.banmajio.mapper.StateMapper">
 
+
+	<select id="dropTable">
+		DROP TABLE IF EXISTS STATE CASCADE;
+	</select>
+
 	<select id="createTable">
 		CREATE TABLE STATE(
 		STATE_ID     serial   PRIMARY KEY   NOT NULL,
@@ -19,13 +24,4 @@
 		STATE (state_id, name) values(#{state_id}, #{name})
 	</insert>
 
-	<update id="updateState" parameterType="State">
-		update STATE set
-		name=#{name} where state_id = #{state_id}
-	</update>
-
-	<delete id="deleteState" parameterType="String">
-		delete from STATE
-		where name=#{name}
-	</delete>
 </mapper>

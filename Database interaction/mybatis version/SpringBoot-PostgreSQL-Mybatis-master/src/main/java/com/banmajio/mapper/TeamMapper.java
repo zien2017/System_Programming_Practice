@@ -1,20 +1,20 @@
 package com.banmajio.mapper;
 
-import com.banmajio.bean.Color;
+import com.banmajio.bean.Team;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
-public interface ColorMapper {
+public interface TeamMapper {
 
 	public void dropTable ();
 
 	public void createTable ();
 
-	public List<Color> getColor();
+	public List<Team> getTeam();
 
-	public int insertColor(Color state);
+	public int insertTeam(Team state);
 
 
 }

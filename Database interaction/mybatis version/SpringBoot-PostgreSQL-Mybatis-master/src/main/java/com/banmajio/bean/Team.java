@@ -2,8 +2,8 @@ package com.banmajio.bean;
 
 
 
-public class State {
-	private int state_id;
+public class Team {
+	private int team_id;
 	private String name;
 
 	public String getName() {
