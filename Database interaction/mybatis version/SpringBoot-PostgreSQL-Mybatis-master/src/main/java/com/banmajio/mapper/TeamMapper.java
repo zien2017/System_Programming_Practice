@@ -14,7 +14,7 @@ public interface TeamMapper {
 
 	public List<Team> getTeam();
 
-	public int insertTeam(Team state);
+	public void insertTeam(Team state);
 
 
 }

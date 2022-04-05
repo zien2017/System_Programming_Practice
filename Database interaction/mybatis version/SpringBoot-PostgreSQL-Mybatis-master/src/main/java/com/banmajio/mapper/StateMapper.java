@@ -1,9 +1,10 @@
 package com.banmajio.mapper;
 
-import java.util.List;
 
 import com.banmajio.bean.State;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface StateMapper {
@@ -14,7 +15,7 @@ public interface StateMapper {
 
 	public List<State> getState();
 
-	public int insertState(State state);
+	public void insertState(State state);
 
 
 }

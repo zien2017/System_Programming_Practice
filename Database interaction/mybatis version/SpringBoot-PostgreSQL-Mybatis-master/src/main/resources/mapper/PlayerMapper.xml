@@ -3,34 +3,36 @@
 
 <mapper namespace="com.banmajio.mapper.PlayerMapper">
 
+
 	<select id="dropTable">
 		DROP TABLE IF EXISTS PLAYER CASCADE;
 	</select>
 
 	<select id="createTable">
 		CREATE TABLE PLAYER(
-		   PLAYER_ID      serial PRIMARY KEY   NOT NULL,
-		   TEAM_ID 		INT     NOT NULL      REFERENCES TEAM(TEAM_ID),
-		   UNIFORM_NUM	INT     NOT NULL,
-		   FIRST_NAME     TEXT    NOT NULL,
-		   LAST_NAME      TEXT    NOT NULL,
-		   MPG            INT,
-		   PPG            INT,
-		   RPG            INT,
-		   APG            INT,
-		   SPG            decimal(10,1),
-		   BPG            decimal(10,1));
+	   PLAYER_ID      serial PRIMARY KEY   NOT NULL,
+	   TEAM_ID 		INT     NOT NULL      REFERENCES TEAM(TEAM_ID),
+	   UNIFORM_NUM	INT     NOT NULL,
+	   FIRST_NAME     TEXT    NOT NULL,
+	   LAST_NAME      TEXT    NOT NULL,
+	   MPG            INT,
+	   PPG            INT,
+	   RPG            INT,
+	   APG            INT,
+	   SPG            decimal(10,1),
+	   BPG            decimal(10,1));
 	</select>
 
 
 	<select id="getPlayer" resultType="Player">
-		select * from PLAYER;
+		select * from PLAYER
 	</select>
 
 	<insert id="insertPlayer" parameterType="Player">
 		insert into
-		PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG, PPG, RPG, APG, SPG, BPG)
+			PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG, PPG, RPG, APG, SPG, BPG)
 		values(#{team_id}, #{uniform_num}, #{first_name}, #{last_name}, #{mpg}, #{ppg}, #{rpg}, #{apg}, #{spg}, #{bpg})
 	</insert>
+
 
 </mapper>

@@ -10,7 +10,8 @@ public class Team {
 	private int wins;
 	private int losses;
 
-	public Team(String name, int state_id, int color_id, int wins, int losses) {
+	public Team(int team_id, String name, int state_id, int color_id, int wins, int losses) {
+		this.team_id = team_id;
 		this.name = name;
 		this.state_id = state_id;
 		this.color_id = color_id;

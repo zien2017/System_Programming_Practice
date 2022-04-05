@@ -45,7 +45,7 @@ public class MainController {
 		playerM.createTable();
 		return "createTableState() Succeed";
 	}
-	
+
 
 	@RequestMapping("/readFiles")
 	public String readFiles() throws IOException {
@@ -67,7 +67,6 @@ public class MainController {
 //	}
 
 
-
 	public void readColors () throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("color.txt");
 		assert is != null;
@@ -76,7 +75,7 @@ public class MainController {
 		String line;
 		while((line = br.readLine()) != null){
 			String[] s = line.split(" ");
-			Color c = new Color(s[1]);
+			Color c = new Color(0, s[1]);
 			colorM.insertColor(c);
 		}
 		br.close();
@@ -90,7 +89,7 @@ public class MainController {
 		String line;
 		while((line = br.readLine()) != null){
 			String[] split = line.split(" ");
-			State s = new State(split[1]);
+			State s = new State(0, split[1]);
 			stateM.insertState(s);
 		}
 		br.close();
@@ -104,7 +103,7 @@ public class MainController {
 		String line;
 		while((line = br.readLine()) != null){
 			String[] sp = line.split(" ");
-			Team s = new Team(sp[1], Integer.parseInt(sp[2]), Integer.parseInt(sp[3]), Integer.parseInt(sp[4]), Integer.parseInt(sp[5]));
+			Team s = new Team(0, sp[1], Integer.parseInt(sp[2]), Integer.parseInt(sp[3]), Integer.parseInt(sp[4]), Integer.parseInt(sp[5]));
 			teamM.insertTeam(s);
 		}
 		br.close();
@@ -119,7 +118,7 @@ public class MainController {
 		String line;
 		while((line = br.readLine()) != null){
 			String[] sp = line.split(" ");
-			Player p = new Player(Integer.parseInt(sp[1]),
+			Player p = new Player(0, Integer.parseInt(sp[1]),
 					Integer.parseInt(sp[2]),
 					sp[3],
 					sp[4],
