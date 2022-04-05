@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.dao.cluster.TransactionDao">
+	<resultMap id="BaseResultMap" type="org.spring.springboot.domain.Transaction">
+		<result column="transaction_id" property="id" />
+		<result column="payer_id" property="payerId" />
+		<result column="receiver_id" property="receiverId" />
+		<result column="amount" property="amount" />
+		<result column="create_time" property="createTime" />
+		<result column="remark" property="remark" />
+	</resultMap>
+
+	<parameterMap id="Transaction" type="org.spring.springboot.domain.Transaction"/>
+
+	<sql id="Base_Column_List">
+		transaction_id, payer_id, receiver_id, amount, create_time, remark
+	</sql>
+
+
+	<select id="findByTransactionId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from transaction
+		where transaction_id = #{id}
+	</select>
+
+
+	<select id="findByPayerId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from transaction
+		where payer_id = #{payerId}
+	</select>
+
+	<select id="findByReceiverId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from transaction
+		where receiver_id = #{receiverId}
+	</select>
+
+	<select id="findAll" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from transaction
+	</select>
+
+	<insert id="saveTransaction" parameterMap="Transaction" useGeneratedKeys="true" keyProperty="id">
+		insert into
+			transaction(transaction_id, payer_id, receiver_id, amount, create_time, remark)
+		values
+			(#{id},#{payerId},#{receiver_id},#{amount},#{createTime},#{remark})
+	</insert>
+
+<!--	<update id="updateTransaction" parameterMap="Transaction">-->
+<!--		update-->
+<!--			transaction-->
+<!--		set-->
+<!--		<if test="asset!=null">-->
+<!--			asset = #{asset}-->
+<!--		</if>-->
+<!--		where-->
+<!--			transaction_id = #{id}-->
+<!--	</update>-->
+
+<!--	<delete id="deleteTransaction" parameterType="java.lang.Long">-->
+<!--		delete from-->
+<!--			transaction-->
+<!--		where-->
+<!--			transaction_id = #{id}-->
+<!--	</delete>-->
+</mapper>
+

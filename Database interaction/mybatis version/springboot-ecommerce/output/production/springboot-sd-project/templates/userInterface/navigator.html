@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Interface</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="maxname" style="width:900px;">
+
+    <div id="head1" style="background-color:#7DCEA0;height:30px;width:150px;float:left;text-align:center;">
+        <a href="/templates/customer/index" target="iframe_content">首页</a>
+    </div>
+    <div id="head2" style="background-color:#73C6B6;height:30px;width:150px;float:left;text-align:center;">
+<!--        <a href="/customer/user" target="iframe_content">用户管理</a>-->
+    </div>
+    <div id="head3" style="background-color:#76D7C4;height:30px;width:150px;float:left;text-align:center;">
+        <a href="/templates/customer/transaction" target="iframe_content">交易记录</a>
+    </div>
+    <div id="head4" style="background-color:#58D68D;height:30px;width:150px;float:left;text-align:center;">
+        <a href="/templates/customer/couponMarket" target="iframe_content">优惠券市场</a>
+    </div>
+    <div id="head5" style="background-color:#35c0cd;height:30px;width:150px;float:left;text-align:center;">
+        <a href="/templates/customer/productManagement" target="iframe_content">商品市场</a>
+    </div>
+    <div id="head6" style="background-color:#35cfcd;height:30px;width:150px;float:left;text-align:center;">
+<!--        <a href="/customer/productTypeManagement" target="iframe_content">商品类型管理</a>-->
+    </div>
+
+</div>
+<div id="content" style="width:900px;">
+    <iframe src="/templates/customer/index" name="iframe_content" width="896" height="4000" frameborder="0"></iframe>
+</div>
+
+
+
+
+</body>
+</html>

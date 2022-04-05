@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>交易记录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="maxname" style="width:900px;">
+<!--    <div id="head1" style="background-color:#7DCEA0;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/">主页</a>-->
+<!--    </div>-->
+<!--    <div id="head2" style="background-color:#73C6B6;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/customer">用户管理</a>-->
+<!--    </div>-->
+<!--    <div id="head3" style="background-color:#76D7C4;height:20px;width:150px;float:left;text-align:center;">-->
+<!--&lt;!&ndash;        <a href="/transaction">交易记录</a>&ndash;&gt;-->
+<!--    </div>-->
+<!--    <div id="head4" style="background-color:#58D68D;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/couponMarket">优惠券市场</a>-->
+<!--    </div>-->
+<!--    <div id="head5" style="background-color:#35c0cd;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/productManagement">商品管理</a>-->
+<!--    </div>-->
+<!--    <div id="head6" style="background-color:#35cfcd;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/productTypeManagement">商品类型管理</a>-->
+<!--    </div>-->
+    <div id="hname" style="background-color:#76D7C4;">
+        <h1 style="margin-bottom:0;text-align:center;" >交易记录</h1>
+
+    </div>
+
+
+    <div id="body1" style="background-color:#BFC9CA;height:200px;width:150px;float:left;">
+        <b>交易搜索</b>
+        <form name="input" action="/customer/transaction" method="get">
+            <p>transaction_id: <input type="text" name="id"/></p>
+            <p><input type="submit" value="搜索"/></p>
+        </form>
+
+    </div>
+    <div id="body2" style="background-color:#D7DBDD;height:200px;width:150px;float:left;">
+        <b>付款人搜索</b>
+        <form name="input" action="/customer/transaction/payer_id" method="get">
+            <p>payer_id: <input type="text" name="payer_id"/></p>
+            <p><input type="submit" value="搜索"/></p>
+        </form>
+
+    </div>
+    <div id="body3" style="background-color:#BFC9CA;height:200px;width:150px;float:left;">
+        <b>收款人搜索</b>
+        <form name="input" action="/customer/transaction/receiver_id" method="get">
+            <p>receiver_id: <input type="text" name="receiver_id"/></p>
+            <p><input type="submit" value="搜索"/></p>
+        </form>
+
+    </div>
+    <div id="body4" style="background-color:#D7DBDD;height:200px;width:150px;float:left;">
+<!--        <a href="/couponMarket">优惠券市场</a>-->
+
+    </div>
+    <div id="body5" style="background-color:#BFC9CA;height:200px;width:150px;float:left;">
+
+    </div>
+    <div id="body6" style="background-color:#D7DBDD;height:200px;width:150px;float:left;">
+    </div>
+    <div id="bool" style="background-color:#F0F8FF;clear:both;text-align:center;">
+        <b th:text="${host}" >Transaction list</b>
+        <table border="1">
+            <tr>
+                <th>交易id</th>
+                <th>付款人id</th>
+                <th>收款人id</th>
+                <th>金额</th>
+                <th>时间</th>
+                <th>备注</th>
+            </tr>
+            <tr th:each="Transaction : ${List}">
+                <td th:text="${Transaction.getId()}">1</td>
+                <td th:text="${Transaction.getPayerId()}">付款人</td>
+                <td th:text="${Transaction.getReceiverId()}">收款人</td>
+                <td th:text="${Transaction.getAmount()}">数额</td>
+                <td th:text="${Transaction.getCreateTime()}">时间</td>
+                <td th:text="${Transaction.getRemark()}">注释</td>
+
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

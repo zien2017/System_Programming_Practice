@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.dao.master.ProductTypeDao">
+	<resultMap id="BaseResultMap" type="org.spring.springboot.domain.ProductType">
+		<result column="product_type_id" property="productTypeId" />
+		<result column="product_type_name" property="productTypeName" />
+		<result column="product_type_state" property="productTypeState" />
+	</resultMap>
+
+	<parameterMap id="ProductType" type="org.spring.springboot.domain.ProductType"/>
+
+	<sql id="Base_Column_List">
+		product_type_id, product_type_name, product_type_state
+	</sql>
+
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+		where product_type_id like #{productTypeId}
+	</select>
+
+
+	<select id="search" resultMap="BaseResultMap" parameterMap="ProductType">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+		where
+			1 = 1
+		<if test="productTypeId!=null">
+			AND product_type_id = #{productTypeId}
+		</if>
+		<if test="productTypeName!=null and productTypeName!=''">
+			AND product_type_name LIKE CONCAT('%',#{productTypeName},'%')
+		</if>
+
+	</select>
+
+	<select id="listAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+	</select>
+
+	<insert id="saveById" parameterMap="ProductType" useGeneratedKeys="true" >
+		insert into
+			product_type(product_type_id, product_type_name, product_type_state)
+		values
+			(#{productTypeId},#{productTypeName},#{productTypeState})
+	</insert>
+
+
+
+</mapper>

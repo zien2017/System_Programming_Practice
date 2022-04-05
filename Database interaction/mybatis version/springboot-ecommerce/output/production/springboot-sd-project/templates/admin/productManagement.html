@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="maxname" style="width:900px;">
+<!--    <div id="head1" style="background-color:#7DCEA0;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/">主页</a>-->
+<!--    </div>-->
+<!--    <div id="head2" style="background-color:#73C6B6;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/customer">用户管理</a>-->
+<!--    </div>-->
+<!--    <div id="head3" style="background-color:#76D7C4;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/transaction">交易记录</a>-->
+<!--    </div>-->
+<!--    <div id="head4" style="background-color:#58D68D;height:20px;width:150px;float:left;text-align:center;">-->
+<!--        <a href="/couponMarket">优惠券市场</a>-->
+
+<!--    </div>-->
+<!--    <div id="head5" style="background-color:#35c0cd;height:20px;width:150px;float:left;text-align:center;">-->
+<!--&lt;!&ndash;        <a href="/productManagement">商品管理</a>&ndash;&gt;-->
+<!--    </div>-->
+<!--    <div id="head6" style="background-color:#35cfcd;height:20px;width:150px;float:left;text-align:center;">-->
+<!--            <a href="/productTypeManagement">商品类型管理</a>-->
+<!--    </div>-->
+    <div id="hname" style="background-color:#35c0cd;">
+        <h1 style="margin-bottom:0;text-align:center;" >商品管理</h1>
+    </div>
+
+
+    <div id="body1" style="background-color:#BFC9CA;height:250px;width:300px;float:left;">
+        <b>搜索</b>
+        <form name="input" action="/admin/productManagement" method="get">
+            <p>id: <input type="text" name="productId"/></p>
+            <p>类型id: <input type="text" name="productTypeId"/></p>
+            <p>商品名: <input type="text" name="productName"/></p>
+            <p>标签: <input type="text" name="productTag"/></p>
+            <p><input type="submit" value="搜索"/></p>
+        </form>
+    </div>
+    <div id="body2" style="background-color:#D7DBDD;height:250px;width:300px;float:left;">
+
+        <b>新建 / 更新 ('-1'为不更改)</b>
+        <br/>
+        <br/>
+        <form action="#" th:action="@{/admin/productManagement}" th:object="${Product}" method="post">
+
+            <table>
+                <tr>
+                    <td>商品id：</td>
+                    <td><input type="text" th:field="*{productId}" /></td>
+                </tr>
+                <tr>
+                    <td>类型id：</td>
+                    <td><input type="text" th:field="*{productTypeId}" /></td>
+                </tr>
+                <tr>
+                    <td>商品名：</td>
+                    <td><input type="text" th:field="*{productName}" /><br/></td>
+                </tr>
+                <tr>
+                    <td>是否上线：</td>
+                    <td><input type="text" th:field="*{productOnsale}" /></td>
+                </tr>
+                <tr>
+                    <td>价格：</td>
+                    <td><input type="text" th:field="*{productPrice}" /></td>
+                </tr>
+                <tr>
+                    <td>数量：</td>
+                    <td><input type="text" th:field="*{productQuantity}" /></td>
+                </tr>
+                <tr>
+                    <td>标签：</td>
+                    <td><input type="text" th:field="*{productTag}" /></td>
+                </tr>
+                <tr>
+                    <td>详细说明：</td>
+                    <td><input type="text" th:field="*{productDescription}"/></td>
+                    <td><input type="submit" value="提交" /></td>
+                </tr>
+
+
+
+            </table>
+
+        </form>
+    </div>
+
+    <div id="body3" style="background-color:#BFC9CA;height:250px;width:150px;float:left;">
+        <b>删除</b>
+        <form action="#" th:action="@{/admin/productDelete}" th:object="${Product}" method="post">
+            <p>id: <input type="text" th:field="*{productId}" /></p>
+            <p><input type="submit" value="删除" /></p>
+        </form>
+    </div>
+
+    <div id="body4" style="background-color:#D7DBDD;height:250px;width:150px;float:left;">
+    </div>
+
+    <div id="bool" style="background-color:#F0F8FF;clear:both;text-align:center;">
+        <b th:text="${host}" >列表</b>
+        <table border="1">
+            <tr>
+                <th>商品ID</th>
+                <th>类型ID</th>
+                <th>商品名</th>
+                <th>是否上线</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>标签</th>
+                <th>详细说明</th>
+
+            </tr>
+            <tr th:each="Product : ${list}">
+                <td th:text="${Product.getProductId()}">1</td>
+                <td th:text="${Product.getProductTypeId()}">1</td>
+                <td th:text="${Product.getProductName()}">1</td>
+                <td th:text="${Product.isProductOnsale()}">1</td>
+                <td th:text="${Product.getProductPrice()}">1</td>
+                <td th:text="${Product.getProductQuantity()}">1</td>
+                <td th:text="${Product.getProductTag()}">1</td>
+                <td th:text="${Product.getProductDescription()}">1</td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
