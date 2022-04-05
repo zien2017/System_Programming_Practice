@@ -163,7 +163,7 @@ void query5(connection *C, int num_wins) {
     nontransaction nt (*C);
 
     result res (nt.exec(sql));
-    cout << "FIRST_NAME LAST_NAME TEAM_NAME WINS" << "\n";
+    cout << "FIRST_NAME LAST_NAME NAME WINS" << "\n";
     for (auto it = res.begin(); it!=res.end(); ++ it){
         for (int i = 0; i < it.size(); ++ i) {
             cout << it[i].as<string>() << ' ';
