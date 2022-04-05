@@ -1,6 +1,7 @@
 package com.banmajio.controller;
 
 import com.banmajio.bean.Color;
+import com.banmajio.bean.Player;
 import com.banmajio.bean.State;
 import com.banmajio.bean.Team;
 import com.banmajio.mapper.ColorMapper;
@@ -44,16 +45,14 @@ public class MainController {
 		playerM.createTable();
 		return "createTableState() Succeed";
 	}
-
-
-
-
+	
 
 	@RequestMapping("/readFiles")
 	public String readFiles() throws IOException {
 		readColors();
 		readStates();
-
+		readTeams ();
+		readPlayers();
 		return "readFiles() succeed.";
 	}
 
@@ -97,4 +96,42 @@ public class MainController {
 		br.close();
 	}
 
+	public void readTeams () throws IOException {
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("team.txt");
+		assert is != null;
+		InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+		BufferedReader br = new BufferedReader(isr);
+		String line;
+		while((line = br.readLine()) != null){
+			String[] sp = line.split(" ");
+			Team s = new Team(sp[1], Integer.parseInt(sp[2]), Integer.parseInt(sp[3]), Integer.parseInt(sp[4]), Integer.parseInt(sp[5]));
+			teamM.insertTeam(s);
+		}
+		br.close();
+	}
+
+
+	public void readPlayers () throws IOException {
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("player.txt");
+		assert is != null;
+		InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+		BufferedReader br = new BufferedReader(isr);
+		String line;
+		while((line = br.readLine()) != null){
+			String[] sp = line.split(" ");
+			Player p = new Player(Integer.parseInt(sp[1]),
+					Integer.parseInt(sp[2]),
+					sp[3],
+					sp[4],
+					Integer.parseInt(sp[5]),
+					Integer.parseInt(sp[6]),
+					Integer.parseInt(sp[7]),
+					Integer.parseInt(sp[8]),
+					Double.parseDouble(sp[9]),
+					Double.parseDouble(sp[10])
+					);
+			playerM.insertPlayer(p);
+		}
+		br.close();
+	}
 }

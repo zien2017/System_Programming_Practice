@@ -10,6 +10,14 @@ public class Team {
 	private int wins;
 	private int losses;
 
+	public Team(String name, int state_id, int color_id, int wins, int losses) {
+		this.name = name;
+		this.state_id = state_id;
+		this.color_id = color_id;
+		this.wins = wins;
+		this.losses = losses;
+	}
+
 	public int getTeam_id() {
 		return team_id;
 	}

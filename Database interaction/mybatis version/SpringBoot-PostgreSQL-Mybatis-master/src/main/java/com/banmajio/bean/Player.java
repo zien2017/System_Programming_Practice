@@ -15,6 +15,19 @@ public class Player {
 	private double spg;
 	private double bpg;
 
+	public Player(int team_id, int uniform_num, String first_name, String last_name, int mpg, int ppg, int rpg, int apg, double spg, double bpg) {
+		this.team_id = team_id;
+		this.uniform_num = uniform_num;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.mpg = mpg;
+		this.ppg = ppg;
+		this.rpg = rpg;
+		this.apg = apg;
+		this.spg = spg;
+		this.bpg = bpg;
+	}
+
 	public int getPlayer_id() {
 		return player_id;
 	}

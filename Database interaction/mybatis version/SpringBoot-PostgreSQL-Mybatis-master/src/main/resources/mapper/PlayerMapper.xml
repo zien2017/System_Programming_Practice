@@ -24,12 +24,13 @@
 
 
 	<select id="getPlayer" resultType="Player">
-		select * from PLAYER
+		select * from PLAYER;
 	</select>
 
 	<insert id="insertPlayer" parameterType="Player">
 		insert into
-		PLAYER (player_id, name) values(#{player_id}, #{name})
+		PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG, PPG, RPG, APG, SPG, BPG)
+		values(#{team_id}, #{uniform_num}, #{first_name}, #{last_name}, #{mpg}, #{ppg}, #{rpg}, #{apg}, #{spg}, #{bpg})
 	</insert>
 
 </mapper>

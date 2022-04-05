@@ -23,7 +23,7 @@
 
 	<insert id="insertTeam" parameterType="Team">
 		insert into
-			TEAM (team_id, name) values(#{team_id}, #{name})
+			TEAM (NAME, STATE_ID, COLOR_ID, WINS, LOSSES) values(#{name}, #{state_id}, #{color_id}, #{wins}, #{losses})
 	</insert>
 
 </mapper>

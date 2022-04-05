@@ -1,5 +1,6 @@
 package com.banmajio.mapper;
 
+import com.banmajio.bean.Player;
 import com.banmajio.bean.Team;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,7 +17,7 @@ public interface PlayerMapper {
 
 	public List<Team> getPlayer();
 
-	public int insertPlayer(Team state);
+	public int insertPlayer(Player player);
 
 
 }

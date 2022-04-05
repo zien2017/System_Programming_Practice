@@ -3,6 +3,7 @@ package com.banmajio.bean;
 
 
 public class State {
+	private int state_id;
 	private String name;
 
 	public State (String name) {
