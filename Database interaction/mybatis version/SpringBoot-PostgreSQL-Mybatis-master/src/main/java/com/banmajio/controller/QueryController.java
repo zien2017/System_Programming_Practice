@@ -3,8 +3,7 @@ package com.banmajio.controller;
 import com.banmajio.bean.*;
 import com.banmajio.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,31 +30,34 @@ public class QueryController {
 		return qM.query_1(q);
 	}
 
-	@RequestMapping("/q2")
-	public List<String> query2() {
-		String color_name = "Green";
-		return qM.query_2(color_name);
+	@RequestMapping(value = {"/q2"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<String> query2(@RequestParam(value = "color", defaultValue = "%") String color) {
+		return qM.query_2(color);
 	}
 
-	@RequestMapping("/q3")
-	public List<Q3_rtn> query3() {
-		String team_name = "Duke";
-		return qM.query_3(team_name);
+
+	@RequestMapping(value = {"/q3"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<Q3_rtn> query3(@RequestParam(value = "team", defaultValue = "%") String team) {
+		return qM.query_3(team);
 	}
 
-	@RequestMapping("/q4")
-	public List<Q4_rtn> query4() {
+	@RequestMapping(value = {"/q4"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<Q4_rtn> query4(@RequestParam(value = "state", defaultValue = "%") String state,
+							   @RequestParam(value = "color", defaultValue = "%") String color) {
 		Q4_arg q4_arg = new Q4_arg();
-		q4_arg.setTeam_state("MA");
-		q4_arg.setTeam_color("Maroon");
-
+		q4_arg.setTeam_state(state);
+		q4_arg.setTeam_color(color);
 		return qM.query_4(q4_arg);
 	}
 
 
-	@RequestMapping("/q5")
-	public List<Q5_rtn> query5() {
-		return qM.query_5(13);
+	@RequestMapping(value = {"/q5"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<Q5_rtn> query5(@RequestParam(value = "wins", defaultValue = "-1") int wins) {
+		return qM.query_5(wins);
 	}
 
 
