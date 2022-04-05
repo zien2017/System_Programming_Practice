@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.banmajio.mapper.QueryMapper">
+
+	<select id="query_1" resultType="Player" parameterType="Q1">
+		select * from PLAYER
+		<where>
+			<if test="use_mpg == true">
+		    	    mpg between #{min_mpg} AND #{max_mpg}
+			</if>
+			<if test="use_ppg == true">
+				AND ppg between #{min_ppg} AND #{max_ppg}
+			</if>
+			<if test="use_rpg == true">
+				AND rpg between #{min_rpg} AND #{max_rpg}
+		    </if>
+			<if test="use_apg == true">
+				AND apg between #{min_apg} AND #{max_apg}
+		    </if>
+			<if test="use_spg == true">
+				AND spg between #{min_spg} AND #{max_spg}
+			</if>
+			<if test="use_bpg == true">
+				AND bpg between #{min_bpg} AND #{max_bpg}
+			</if>
+		</where>
+	</select>
+
+	<select id="query_2" resultType="String" parameterType="String">
+		SELECT TEAM.NAME
+		FROM COLOR
+		    JOIN TEAM ON TEAM.COLOR_ID = COLOR.COLOR_ID
+		WHERE COLOR.NAME LIKE #{this}
+	</select>
+
+	<select id="query_3" resultType="Q3_rtn" parameterType="String">
+		SELECT PLAYER.FIRST_NAME as first_name, PLAYER.LAST_NAME as last_name
+		FROM PLAYER
+		    JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID
+		WHERE TEAM.NAME LIKE #{this}
+		ORDER BY PLAYER.PPG DESC
+	</select>
+
+
+	<select id="query_4" resultType="Q4_rtn" parameterType="Q4_arg">
+		SELECT PLAYER.FIRST_NAME as first_name, PLAYER.LAST_NAME as last_name, PLAYER.UNIFORM_NUM as uniform_num
+		FROM PLAYER
+			 JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID
+			 JOIN STATE ON TEAM.STATE_ID = STATE.STATE_ID
+			 JOIN COLOR ON TEAM.COLOR_ID = COLOR.COLOR_ID
+		WHERE STATE.NAME LIKE #{team_state}
+		 	 AND COLOR.NAME LIKE #{team_color}
+	</select>
+
+
+	<select id="query_5" resultType="Q5_rtn" parameterType="int">
+		SELECT PLAYER.FIRST_NAME as first_name, PLAYER.LAST_NAME as last_name, TEAM.NAME as team_name, TEAM.WINS as num_wins
+		FROM PLAYER
+			 JOIN TEAM ON TEAM.TEAM_ID = PLAYER.TEAM_ID
+		WHERE TEAM.WINS > #{this}
+	</select>
+
+
+</mapper>

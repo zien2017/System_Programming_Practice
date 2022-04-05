@@ -6,6 +6,7 @@ public class Player {
 	private Integer uniform_num;
 	private String first_name;
 	private String last_name;
+
 	private Integer mpg;
 	private Integer ppg;
 	private Integer rpg;

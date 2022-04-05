@@ -15,8 +15,9 @@ public class PlayerController {
 
 
 	@RequestMapping("player/select")
-	public List<Player> getPlayer() {
-		return playerM.getPlayer();
+	public List<Player> getAllPlayer() {
+		return playerM.getAllPlayer();
 	}
+
 
 }

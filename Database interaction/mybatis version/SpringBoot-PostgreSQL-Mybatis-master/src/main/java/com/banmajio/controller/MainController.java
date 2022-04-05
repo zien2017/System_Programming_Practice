@@ -56,16 +56,6 @@ public class MainController {
 		return "readFiles() succeed.";
 	}
 
-//	@RequestMapping("/select")
-//	public List<Team> select() {
-//		return mapper.getTeam();
-//	}
-
-//	@RequestMapping("/insert")
-//	public int insert(Team team) {
-//		return mapper.insertTeam(team);
-//	}
-
 
 	public void readColors () throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("color.txt");

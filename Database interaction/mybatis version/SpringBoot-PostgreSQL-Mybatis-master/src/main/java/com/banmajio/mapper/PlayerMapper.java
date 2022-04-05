@@ -12,7 +12,9 @@ public interface PlayerMapper {
 
 	public void createTable ();
 
-	public List<Player> getPlayer();
+	public List<Player> getAllPlayer();
+
+	public List<Player> getPlayer(Player p);
 
 	public void insertPlayer(Player player);
 }

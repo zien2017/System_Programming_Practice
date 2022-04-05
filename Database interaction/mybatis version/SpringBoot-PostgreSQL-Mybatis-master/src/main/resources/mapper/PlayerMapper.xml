@@ -3,7 +3,6 @@
 
 <mapper namespace="com.banmajio.mapper.PlayerMapper">
 
-
 	<select id="dropTable">
 		DROP TABLE IF EXISTS PLAYER CASCADE;
 	</select>
@@ -24,7 +23,13 @@
 	</select>
 
 
+
+	<select id="getAllPlayer" resultType="Player">
+		select * from PLAYER
+	</select>
+
 	<select id="getPlayer" resultType="Player">
+
 		select * from PLAYER
 	</select>
 
