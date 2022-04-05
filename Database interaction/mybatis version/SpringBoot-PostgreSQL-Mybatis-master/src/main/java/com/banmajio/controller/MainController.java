@@ -21,7 +21,7 @@ public class MainController {
 	private TeamMapper teamM;
 	@Autowired
 	private PlayerMapper playerM;
-	
+
 
 	@RequestMapping("/createTables")
 	public String createTableState() {
