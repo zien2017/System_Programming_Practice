@@ -29,6 +29,7 @@ public class MainController {
 	@Autowired
 	private PlayerMapper playerM;
 
+	private boolean hasRead = false;
 
 	@RequestMapping("/createTables")
 	public String createTableState() {
@@ -42,16 +43,19 @@ public class MainController {
 		stateM.createTable();
 		teamM.createTable();
 		playerM.createTable();
+		hasRead = false;
 		return "createTableState() Succeed";
 	}
 
 
 	@RequestMapping("/readFiles")
 	public String readFiles() throws IOException {
+		if (hasRead) return "readFiles() has been called before.";
 		readColors();
 		readStates();
 		readTeams ();
 		readPlayers();
+		hasRead = true;
 		return "readFiles() succeed.";
 	}
 
